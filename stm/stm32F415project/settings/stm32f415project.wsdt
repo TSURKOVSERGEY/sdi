@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<Workspace>
+  <ConfigDictionary>
+    
+  <CurrentConfigs><Project>stm32f415project/Debug</Project></CurrentConfigs></ConfigDictionary>
+  <Desktop>
+    <Static>
+      <Workspace>
+        <ColumnWidths>
+          
+          
+          
+          
+        <Column0>548</Column0><Column1>27</Column1><Column2>27</Column2><Column3>27</Column3></ColumnWidths>
+      </Workspace>
+      <Build>
+        
+        
+        
+        
+      <ColumnWidth0>20</ColumnWidth0><ColumnWidth1>1215</ColumnWidth1><ColumnWidth2>324</ColumnWidth2><ColumnWidth3>81</ColumnWidth3></Build>
+      <TerminalIO/>
+      <Debug-Log>
+        
+        
+      <ColumnWidth0>20</ColumnWidth0><ColumnWidth1>1621</ColumnWidth1></Debug-Log>
+    <Register><PreferedWindows><Position>4</Position><ScreenPosX>1002</ScreenPosX><ScreenPosY>202</ScreenPosY><Windows/></PreferedWindows></Register></Static>
+    <Windows>
+      
+      
+    <Wnd2>
+        <Tabs>
+          <Tab>
+            <Identity>TabID-30900-25890</Identity>
+            <TabName>Workspace</TabName>
+            <Factory>Workspace</Factory>
+            <Session>
+              
+            <NodeDict><ExpandedNode>stm32f415project</ExpandedNode><ExpandedNode>stm32f415project/Output</ExpandedNode><ExpandedNode>stm32f415project/sources</ExpandedNode><ExpandedNode>stm32f415project/stm_lib</ExpandedNode><ExpandedNode>stm32f415project/system</ExpandedNode></NodeDict></Session>
+          </Tab>
+        </Tabs>
+        
+      <SelectedTab>0</SelectedTab></Wnd2><Wnd3>
+        <Tabs>
+          <Tab>
+            <Identity>TabID-21553-26474</Identity>
+            <TabName>Build</TabName>
+            <Factory>Build</Factory>
+            <Session/>
+          </Tab>
+          <Tab>
+            <Identity>TabID-4364-27206</Identity>
+            <TabName>Debug Log</TabName>
+            <Factory>Debug-Log</Factory>
+            <Session/>
+          </Tab>
+        </Tabs>
+        
+      <SelectedTab>0</SelectedTab></Wnd3></Windows>
+    <Editor>
+      
+      
+      
+      
+    <Pane><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\sources\main.c</Filename><XPos>0</XPos><YPos>27</YPos><SelStart>832</SelStart><SelEnd>832</SelEnd></Tab><ActiveTab>0</ActiveTab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\sources\spi_pga112.c</Filename><XPos>0</XPos><YPos>115</YPos><SelStart>4840</SelStart><SelEnd>4840</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\sources\config.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>3742</SelStart><SelEnd>3742</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\STM32F4xx_StdPeriph_Driver\inc\stm32f4xx_adc.h</Filename><XPos>0</XPos><YPos>125</YPos><SelStart>7363</SelStart><SelEnd>7363</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\sources\adpcm_coder.c</Filename><XPos>0</XPos><YPos>121</YPos><SelStart>3433</SelStart><SelEnd>3433</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\STM32F4xx_StdPeriph_Driver\src\stm32f4xx_gpio.c</Filename><XPos>0</XPos><YPos>307</YPos><SelStart>14835</SelStart><SelEnd>14835</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\sources\transmit_handler.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>357</SelStart><SelEnd>357</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\sources\spi_pga112.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>1675</SelStart><SelEnd>1676</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>$WS_DIR$\sources\i2c_f207.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>2404</SelStart><SelEnd>2404</SelEnd></Tab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
+    <Positions>
+      
+      
+      
+      
+      
+    <Top><Row0><Sizes><Toolbar-00fd2d80><key>iaridepm.enu1</key></Toolbar-00fd2d80></Sizes></Row0><Row1><Sizes/></Row1></Top><Left><Row0><Sizes><Wnd2><Rect><Top>-2</Top><Left>-2</Left><Bottom>733</Bottom><Right>622</Right><x>-2</x><y>-2</y><xscreen>270</xscreen><yscreen>285</yscreen><sizeHorzCX>160714</sizeHorzCX><sizeHorzCY>294421</sizeHorzCY><sizeVertCX>371429</sizeVertCX><sizeVertCY>759298</sizeVertCY></Rect></Wnd2></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd3><Rect><Top>-2</Top><Left>-2</Left><Bottom>190</Bottom><Right>1682</Right><x>-2</x><y>-2</y><xscreen>1684</xscreen><yscreen>192</yscreen><sizeHorzCX>1002381</sizeHorzCX><sizeHorzCY>198347</sizeHorzCY><sizeVertCX>160714</sizeVertCX><sizeVertCY>294421</sizeVertCY></Rect></Wnd3></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
+  </Desktop>
+</Workspace>
+
+

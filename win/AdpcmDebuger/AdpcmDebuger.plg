@@ -1,0 +1,40 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: AdpcmDebuger - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating command line "rc.exe /l 0x419 /fo"Debug/AdpcmDebuger.res" /d "_DEBUG" "D:\MyWork\Система документирования\win_project\AdpcmDebuger\AdpcmDebuger.rc"" 
+Creating temporary file "C:\Users\D899~1\AppData\Local\Temp\RSPD6EB.tmp" with contents
+[
+/nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /FR"Debug/" /Fp"Debug/AdpcmDebuger.pch" /Yu"stdafx.h" /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"D:\MyWork\Система документирования\win_project\AdpcmDebuger\AdpcmDebuger.cpp"
+]
+Creating command line "cl.exe @C:\Users\D899~1\AppData\Local\Temp\RSPD6EB.tmp" 
+Creating temporary file "C:\Users\D899~1\AppData\Local\Temp\RSPD6EC.tmp" with contents
+[
+/nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /FR"Debug/" /Fp"Debug/AdpcmDebuger.pch" /Yc"stdafx.h" /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"D:\MyWork\Система документирования\win_project\AdpcmDebuger\StdAfx.cpp"
+]
+Creating command line "cl.exe @C:\Users\D899~1\AppData\Local\Temp\RSPD6EC.tmp" 
+Creating command line "link.exe /nologo /subsystem:console /incremental:yes /pdb:"Debug/AdpcmDebuger.pdb" /debug /machine:I386 /out:"Debug/AdpcmDebuger.exe" /pdbtype:sept  ".\Debug\AdpcmDebuger.obj" ".\Debug\StdAfx.obj" ".\Debug\AdpcmDebuger.res" "
+<h3>Output Window</h3>
+Compiling resources...
+Compiling...
+StdAfx.cpp
+Compiling...
+AdpcmDebuger.cpp
+Linking...
+Creating command line "bscmake.exe /nologo /o"Debug/AdpcmDebuger.bsc"  ".\Debug\StdAfx.sbr" ".\Debug\AdpcmDebuger.sbr""
+Creating browse info file...
+<h3>Output Window</h3>
+
+
+
+<h3>Results</h3>
+AdpcmDebuger.exe - 0 error(s), 0 warning(s)
+</pre>
+</body>
+</html>

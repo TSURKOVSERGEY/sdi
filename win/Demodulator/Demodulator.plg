@@ -1,0 +1,40 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: Demodulator - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\Users\D899~1\AppData\Local\Temp\RSP2704.tmp" with contents
+[
+/nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /FR"Debug/" /Fp"Debug/Demodulator.pch" /Yu"stdafx.h" /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"D:\MyWork\Система документирования\win_project\Demodulator\DigitalProcessing.cpp"
+]
+Creating command line "cl.exe @C:\Users\D899~1\AppData\Local\Temp\RSP2704.tmp" 
+Creating temporary file "C:\Users\D899~1\AppData\Local\Temp\RSP2705.tmp" with contents
+[
+/nologo /subsystem:windows /incremental:yes /pdb:"Debug/Demodulator.pdb" /debug /machine:I386 /out:"Debug/Demodulator.exe" /pdbtype:sept 
+".\Debug\Demodulator.obj"
+".\Debug\DemodulatorDlg.obj"
+".\Debug\DigitalProcessing.obj"
+".\Debug\Graph.obj"
+".\Debug\PlayBuffer.obj"
+".\Debug\RecordBuffer.obj"
+".\Debug\StdAfx.obj"
+".\Debug\Wave.obj"
+".\Debug\Demodulator.res"
+]
+Creating command line "link.exe @C:\Users\D899~1\AppData\Local\Temp\RSP2705.tmp"
+<h3>Output Window</h3>
+Compiling...
+DigitalProcessing.cpp
+Linking...
+
+
+
+<h3>Results</h3>
+Demodulator.exe - 0 error(s), 0 warning(s)
+</pre>
+</body>
+</html>
