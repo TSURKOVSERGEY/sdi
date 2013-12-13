@@ -31,6 +31,8 @@ void SystemInit(void)
   /* Disable all interrupts */
   RCC->CIR = 0x00000000;
   
+  RCC->APB2ENR |= RCC_APB2ENR_TIM1EN;
+  
   SystemInit_ExtMemCtl(); 
 
   SetSysClock();
