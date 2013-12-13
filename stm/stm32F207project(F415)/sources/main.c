@@ -38,10 +38,87 @@ int rew_status = 0;
 
 __IO uint32_t LocalTime;
 
+
+void TIM77_Config(uint32_t period)
+{  
+  NVIC_DisableIRQ(TIM7_IRQn);  
+  TIM_ITConfig(TIM7,TIM7_IRQn, DISABLE);
+  
+   
+  TIM_Cmd(TIM7, DISABLE);
+  TIM_TimeBaseInitTypeDef    TIM_TimeBaseStructure;
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM7, ENABLE);
+  TIM_TimeBaseStructInit(&TIM_TimeBaseStructure);
+  TIM_TimeBaseStructure.TIM_Period = period*2;
+  TIM_TimeBaseStructure.TIM_Prescaler =   30-1; // 1 mks
+  TIM_TimeBaseStructure.TIM_ClockDivision = 0;
+  TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+  TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;//period*2-1;
+  TIM_TimeBaseInit(TIM7, &TIM_TimeBaseStructure);
+  TIM_SelectOutputTrigger(TIM7, TIM_TRGOSource_Update);
+  TIM_ITConfig(TIM7,TIM7_IRQn, ENABLE);  
+  NVIC_EnableIRQ(TIM7_IRQn);  
+  TIM_Cmd(TIM7, ENABLE);
+}
+
+ 
+DMA_InitTypeDef            DMA_InitStructure;
+
+#define DMA_Stream DMA2_Stream6
+#define SIZE 10
+
+void main()
+{
+  LED_Config();
+  SRAM_Config();
+ 
+  uint16_t *pmem1 = (uint16_t*)sram_bank3;  
+  uint16_t *pmem2 = (uint16_t*)(sram_bank3 + 0x20);  
+
+  for(int i = 0; i < SIZE; i++)
+  {
+    *(pmem1++) = 0;
+    *(pmem2++) = i;
+    
+  }
+
+
+  
+  DMA_DeInit (DMA_Stream);
+  
+  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA2, ENABLE); 
+  DMA_InitStructure.DMA_Channel = DMA_Channel_0;   
+  DMA_InitStructure.DMA_PeripheralBaseAddr = sram_bank3+0x20;
+  DMA_InitStructure.DMA_Memory0BaseAddr = sram_bank3;
+  DMA_InitStructure.DMA_DIR = DMA_DIR_MemoryToMemory;
+  DMA_InitStructure.DMA_BufferSize = SIZE; 
+  DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Enable;
+  DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
+  DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;
+  DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_HalfWord;
+  DMA_InitStructure.DMA_Mode = DMA_FIFOMode_Disable;
+  DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_HalfFull;
+  DMA_InitStructure.DMA_Priority = DMA_Priority_High;
+  DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable; 
+  DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
+  DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
+  DMA_Init(DMA_Stream,&DMA_InitStructure);  
+ 
+ // DMA_SetCurrDataCounter(DMA_Stream,100);
+  DMA_Cmd(DMA_Stream, ENABLE);
+  
+  
+  while(1)
+  {
+     GPIO_ToggleBits(GPIOI, GPIO_Pin_1);
+  }
+  
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // MAIN * MAIN * MAIN * MAIN * MAIN * MAIN * MAIN * MAIN * MAIN * MAIN * MAIN * 
 ////////////////////////////////////////////////////////////////////////////////
-void main()
+void main_old()
 {
     
   msg_8bit_size  = sizeof(adpcm_msg)  / 2;
