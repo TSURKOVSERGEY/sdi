@@ -57,7 +57,7 @@ void I2C1_Config(void)
   
   I2C_Cmd(I2C1, ENABLE);  
   
-  f415_WriteMessage(F415_STOP_STREAM,NULL,0);
+  //f415_WriteMessage(F415_STOP_STREAM,NULL,0);
 
 }
 

@@ -13,9 +13,8 @@ extern bad_block_map_struct*    pmap_bb;
  
 void cmd_handler(int id)
 {
-  int i;
-  uint8_t index,index_pos;
-  
+    int i;
+ 
     switch(rx_udp_msg[id].msg_id)
     {
       case CHECK_CONNECT: 
@@ -38,7 +37,6 @@ void cmd_handler(int id)
            
       break;
       
-           
       case GET_SB_HEADER: 
         
            GetSuperBlockHeader(*((uint32_t*)&rx_udp_msg[id].data[0]),*((uint32_t*)&rx_udp_msg[id].data[4]));
@@ -49,9 +47,8 @@ void cmd_handler(int id)
           
            GetSuperBlockPage(*((uint32_t*)&rx_udp_msg[id].data[0]));
  
-       break;
+      break;
       
-          
       case START_AUDIO_STREAM:
         
           f415_WriteMessage(F415_START_STREAM,NULL,0);
@@ -66,52 +63,20 @@ void cmd_handler(int id)
            
       break;  
       
-      case SET_GAIN: 
-      break;
-      
-      case GET_SYS_INFO_0:
-      break;
+      case SET_GAIN:
         
-      case GET_SYS_INFO_1:
       break;
       
-      case GET_SYS_INFO_2:
+      case GET_SYS_INFO:
+          
+          SendMessage(id,GET_SYS_INFO + 100,tab,sizeof(tab_struct));  
         
-           SendMessage(id,GET_SYS_INFO_2 + 100,tab,sizeof(tab_struct));
-           
-      break;
-      
-      case GET_BM:
-
-          index = alarm_data.bookmark_index;
-          index_pos = rx_udp_msg[id].data[0] + 1;
-          while(index_pos-- > 0) index = (index - 1) & 0xf;
-          SendMessage(id,GET_BM + 100,&alarm_data.bms[index],sizeof(tab_struct));
+       break;
  
-      break;      
-      
-      case SET_FIXED: 
-        
-           if(alarm_data.fixed_index[0] != rx_udp_msg[id].data[0])
-           {
-             alarm_data.fixed_index[0] = rx_udp_msg[id].data[0];
-             alarm_data.close_file_flag = 1;
-           }
-           
-           SendMessage(id,SET_FIXED + 100,NULL,0);
-                   
-      break;
-      
-      case GET_FIXED: 
-     
-           SendMessage(id,GET_FIXED + 100,&alarm_data.fixed_index[1],1);
-                
-      break;
-      
       case GET_ETH_PARAM:
         
-           info_ini.at24_error = AT24_Read(0,(uint8_t*)&eth_ini_dat,sizeof(eth_ini_dat));
-           SendMessage(id,GET_ETH_PARAM + 100,&eth_ini_dat,sizeof(eth_ini_dat));
+          info_ini.at24_error = AT24_Read(0,(uint8_t*)&eth_ini_dat,sizeof(eth_ini_dat));
+          SendMessage(id,GET_ETH_PARAM + 100,&eth_ini_dat,sizeof(eth_ini_dat));
            
       break;
 
@@ -136,7 +101,7 @@ void cmd_handler(int id)
       case SET_MAP_BB:
         
         pmap_bb->bad_block_number = 0;
-        for(i = 0; i < MAX_PAGE; i++) pmap_bb->block_address[i] = BLOCK_GOOD;
+        for(i = 0; i < MAX_DATA_PAGE; i++) pmap_bb->block_address[i] = BLOCK_GOOD;
         CRC_ResetDR();
         pmap_bb->crc = CRC_CalcBlockCRC((uint32_t*)pmap_bb,(sizeof(bad_block_map_struct)-4)/4); 
         info_ini.at24_error = AT24_Write(AT45ADR_MAP_BB,(uint8_t*)pmap_bb,sizeof(bad_block_map_struct));
@@ -144,19 +109,6 @@ void cmd_handler(int id)
         
       break;    
        
-      case SET_CFI:
-        
-        alarm_data.close_file_flag = 1;
-        SendMessage(id,SET_CFI + 100,NULL,0);
-       
-      break;    
-
-      case GET_CFI:
-
-        SendMessage(id,GET_CFI + 100,&alarm_data.close_file_flag,1);
-        
-      break;    
-      
       
     }
 }

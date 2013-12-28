@@ -12,7 +12,7 @@ void NAND_Config(void)
   nand_ecc_enable(1);
   
   nand_erase_super_block(0,0);
-  //nand_erase_super_block(1,0);
+  nand_erase_super_block(1,0);
 
 }
 

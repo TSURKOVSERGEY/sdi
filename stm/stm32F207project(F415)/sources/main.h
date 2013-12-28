@@ -37,12 +37,13 @@
 #define BLOCK_GOOD           0x1
 #define BLOCK_BAD            0x2
 
+#define MAX_ERASE_PAGE       PAGE_IN_SBLOCK 
 #define MAX_PAGE_IN_NAND     2048 // максимальное колличество страниц на всей флеш
 #define PAGE_IN_BLOCK        64
-#define MAX_PAGE             256// 2048  // максимальное кол-во страниц в супер блоке
-#define PAGE_IN_SBLOCK       MAX_PAGE + 64
+#define MAX_DATA_PAGE        256// 2048  // максимальное кол-во страниц в супер блоке
+#define PAGE_IN_SBLOCK       (MAX_DATA_PAGE + 64)
 #define MAX_SBLOCK           100
-#define MAX_BLOCK            MAX_SBLOCK * PAGE_IN_SBLOCK / 64
+#define MAX_BLOCK            (MAX_SBLOCK * PAGE_IN_SBLOCK / 64)
 
 #define SERV                 0
 #define PTUK                 1
@@ -59,27 +60,28 @@
 #define START_AUDIO_STREAM   2
 #define STOP_AUDIO_STREAM    3
 
-#define GET_SYS_INFO_0       20
-#define GET_SYS_INFO_1       21
-#define GET_SYS_INFO_2       22
-#define GET_SYS_INFO_3       23
+#define GET_SYS_INFO         20
+//#define GET_SYS_INFO_0       20
+//#define GET_SYS_INFO_1       21
+//#define GET_SYS_INFO_2       22
+//#define GET_SYS_INFO_3       23
 
 #define GET_SB_HEADER        30
 #define GET_PAGE             31
 #define GET_TIME             32
 #define GET_ETH_PARAM        33
-#define GET_BM               34
-#define GET_FIXED            35
-#define GET_CFI              36
+//#define GET_BM               34
+//#define GET_FIXED            35
+//#define GET_CFI              36
 
 #define SET_GAIN             40
-#define SET_INDEX            41
+//#define SET_INDEX            41
 #define SET_TIME             42
 #define SET_ETH_PARAM        43
 #define SET_MAP_BB           44
-#define SET_FIXED            45
-#define SET_SYS_INFO_0       46
-#define SET_CFI              47
+//#define SET_FIXED            45
+//#define SET_SYS_INFO_0       46
+//#define SET_CFI              47
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -209,6 +211,7 @@ typedef struct
    uint32_t at24_error;
    uint32_t map_bb_error;
    uint32_t rtc_error;
+   uint32_t write_driver_error;
  } initial_info_struct;
 #pragma pack(pop)
 
@@ -244,18 +247,15 @@ typedef struct
    uint32_t sb_num;
    uint32_t page_real_write;
    uint32_t super_block_prev;
-   uint32_t super_block_this;
    uint32_t super_block_next;
-   index_pointer_struct ips[MAX_PAGE];  
+   index_pointer_struct ips[MAX_DATA_PAGE];  
  } super_block_struct;
 #pragma pack(pop)
  
 #pragma pack(push,1)   
  typedef struct 
  { uint32_t unit_index;     // индекс комплекиа нанд-флеш
-   uint32_t sbw;            // индекс записываемого файла
    uint32_t sbrw;           // индекс последнего записанного файла
-   uint32_t index[2];       // индекс первого - последнего записанного файла
    uint64_t time[2];        // врем€  первого - последнего записанного файла
  } tab_struct[2];
 #pragma pack(pop) 
@@ -263,23 +263,26 @@ typedef struct
 #pragma pack(push,1)
  typedef struct
  { uint32_t index; 
-   uint32_t change_index_state;
+   uint32_t state;
    uint32_t super_block_real_read;
    uint32_t super_block_real_write;
    uint64_t super_block_time[2];
+   
    uint32_t PageRealWrite;
-   uint32_t PageAddress; 
    uint32_t PageRealErase;
-   uint32_t EraseCounter;
+      
+   uint32_t PageAddress; 
+
+   uint32_t ErasePageCounter;
+ 
    uint32_t super_block_begin;
    uint32_t super_block_prev;
    uint32_t super_block_current;
+ 
    uint32_t err_crc_binar;
    uint32_t err_crc_wr_Nand;
    uint32_t err_crc_rd_Nand;
-   uint32_t bookmark_index;
-   uint8_t close_file_flag;
-   uint8_t  fixed_index[2];
+
    tab_struct bms[MAX_BOOKMARK];
  } alarm_struct;
 #pragma pack(pop) 

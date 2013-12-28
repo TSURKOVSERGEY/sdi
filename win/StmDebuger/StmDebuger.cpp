@@ -25,9 +25,9 @@ static char THIS_FILE[] = __FILE__;
 #define STOP_AUDIO_STREAM    3
 
 #define GET_SYS_INFO_0       20
-#define GET_SYS_INFO_1       21
-#define GET_SYS_INFO_2       22
-#define GET_SYS_INFO_3       23
+//#define GET_SYS_INFO_1       21
+//#define GET_SYS_INFO_2       22
+//#define GET_SYS_INFO_3       23
 
 
 #define GET_SB_HEADER        30
@@ -63,8 +63,8 @@ static char THIS_FILE[] = __FILE__;
 #define SET_UDP_TX1_PORT     7
 #define SET_UDP_RX2_PORT     8
 
-//#define SERV
-#define PTUK
+#define SERV
+//#define PTUK
 //#define SNTP
 
 
@@ -134,9 +134,7 @@ typedef struct
 struct tab_struct
 {
 	unsigned int unit_index;
-	unsigned int sbw;
 	unsigned int sbrw;
- 	unsigned int file_index[2];
 	time_struct  time_begin;
     time_struct  time_end;
 
@@ -156,7 +154,7 @@ int recive_index = 0;
 
 FILE        *fp;
 
-char STM_ADR[] = {"192.9.206.201"}; 
+char STM_ADR[] = {"192.9.206.200"}; 
 
 /////////////////////////////////////////////////////////////////////////////
 
@@ -682,29 +680,10 @@ void CMD_GetSysinfo(void)
 	if(!UdpInitial()) return;
 
 
-	switch(param1)
-	{
-	   case 0: printf("\r info < L151 > \n");
-	   break;
-
-	   case 1: printf("\r info < MT29F4 > \n");
-	   break;
-
-	   case 2: printf("\r info < files real write > \n");
-	   break;
-
-	   default: return;
-	
-	}
-
-	int cmd = GET_SYS_INFO_0 + param1;
+	int cmd = GET_SYS_INFO_0;
 
  	SendMessage(cmd,NULL,0);
 	
-	if(cmd == GET_SYS_INFO_3)
-	{
-		Sleep(500);
-	}
 	
 	if(RecvMessage(cmd+100,NULL,0) == 0)
 	{
@@ -713,119 +692,25 @@ void CMD_GetSysinfo(void)
 	}
 
 
-	  
-	switch(rx_tcp_msg.msg_id)
-	{
-	   case GET_SYS_INFO_0 + 100:
-		   {
-               #define MAX_CHANNEL 16
-			   
-			   struct info
-			   {
-                   unsigned short L151_gain[MAX_CHANNEL];
-                   unsigned int   L151_mode;
-                   unsigned int   L151_initial_error;
-                   unsigned int   L151_stream_error;
-			   } *pinfo;
-
-			   pinfo = (info*) &rx_tcp_msg.data[0];
- 
-			   printf("\n L151_initial_error  [ %d ] \n",pinfo->L151_initial_error);
-	           printf("\r L151_mode  [ %d ] \n",pinfo->L151_mode);
-	           printf("\r L151_stream_error  [ %d ] \n",pinfo->L151_stream_error);
-     	       
-			   for(int i = 0; i < MAX_CHANNEL; i++) 
-			   {
-				  printf("\r channel %02d gain 0x%x \n",i,pinfo->L151_gain[i]);
-			   }
-		   }
-
-       break;
-
-	   case GET_SYS_INFO_1 + 100:
-		   {
-
-			   struct info
-			   {
-				   unsigned int unit_index;
-                   unsigned int unit_mode;
-                   unsigned int super_block_real_read;
-                   unsigned int super_block_real_write;
-                   time_struct  time_begin;
-                   time_struct  time_end;
-				   unsigned int super_block_addres;
-				   unsigned int err_crc[3];
-
-			   } *pinfo;
-
-			   pinfo = (info*) &rx_tcp_msg.data[0];
-               
-			   #define MODE_STREAM  11
-
-				
-				   
-
-		       printf("\n time begin %dh : %dm : %ds   %d-%d-%d \n",pinfo->time_begin.RTC_Hours,pinfo->time_begin.RTC_Minutes,pinfo->time_begin.RTC_Seconds,pinfo->time_begin.RTC_Date,pinfo->time_begin.RTC_Month,pinfo->time_begin.RTC_Year+2000);
-			   printf("\r time end   %dh : %dm : %ds   %d-%d-%d \n",pinfo->time_end.RTC_Hours,pinfo->time_end.RTC_Minutes,pinfo->time_end.RTC_Seconds,pinfo->time_end.RTC_Date,pinfo->time_end.RTC_Month,pinfo->time_end.RTC_Year+2000);
-
-			   printf("\n");
-			   printf("\r unit MT29F4               %d   \n",pinfo->unit_index);
-			   printf("\r mode MT29F4               %d   \n",pinfo->unit_mode);
-	           printf("\r super_block_real_read     %d   \n",pinfo->super_block_real_read);
-	           printf("\r super_block_real_write    %d   \n",pinfo->super_block_real_write);
-	           printf("\r super_block_addres        %d   \n",pinfo->super_block_addres);
-               printf("\r err_crc_binar             %d   \n",pinfo->err_crc[0]);
-               printf("\r err_crc_write_nand        %d   \n",pinfo->err_crc[1]);
-               printf("\r err_crc_read_nand         %d   \n",pinfo->err_crc[2]);
-
-
-
-			   printf("\n");
-
-		   }
-
-       break;
-
-
-	   case GET_SYS_INFO_2 + 100:
-		   {
-			   struct tab
-			   {   unsigned int unit_index;
-				   unsigned int reserved;
-				   unsigned int sbrw;
-				   unsigned int index[2];
-				   time_struct  time_begin;
-                   time_struct  time_end;
-
-			   } tab[2];
+   struct tab
+   {   unsigned int unit_index;
+       unsigned int sbrw;
+	   time_struct  time_begin;
+       time_struct  time_end;
+   } tab[2];
 			   
 			   
-			   memcpy(tab,&rx_tcp_msg.data[0],sizeof(tab));
+  memcpy(tab,&rx_tcp_msg.data[0],sizeof(tab));
 
+   for(int i = 0; i < 2; i++)
+   {
+	   printf("\n unit_index  %d ",i);
+       printf("\n current_write_index  %d \n",tab[i].unit_index);
+	   printf("\r total files write  %d   \n",tab[i].sbrw);
+       printf("\r time begin %dh : %dm : %ds   %d-%d-%d \n",tab[i].time_begin.RTC_Hours,tab[i].time_begin.RTC_Minutes,tab[i].time_begin.RTC_Seconds,tab[i].time_begin.RTC_Date,tab[i].time_begin.RTC_Month,tab[i].time_begin.RTC_Year+2000);
+       printf("\r time end   %dh : %dm : %ds   %d-%d-%d \n",tab[i].time_end.RTC_Hours,tab[i].time_end.RTC_Minutes,tab[i].time_end.RTC_Seconds,tab[i].time_end.RTC_Date,tab[i].time_end.RTC_Month,tab[i].time_end.RTC_Year+2000);
+   }
 
-			   for(int i = 0; i < 2; i++)
-			   {
- 			       printf("\n unit_index  %d \n",i);
-
-				   printf("\r total files write  %d   \n",tab[i].sbrw);
-
-		      	   printf("\r begin files num    %d   \n",tab[i].index[0]);
-		    	   printf("\r end files num      %d   \n",tab[i].index[1]);
-
-	               printf("\r time begin %dh : %dm : %ds   %d-%d-%d \n",tab[i].time_begin.RTC_Hours,tab[i].time_begin.RTC_Minutes,tab[i].time_begin.RTC_Seconds,tab[i].time_begin.RTC_Date,tab[i].time_begin.RTC_Month,tab[i].time_begin.RTC_Year+2000);
-			       printf("\r time end   %dh : %dm : %ds   %d-%d-%d \n",tab[i].time_end.RTC_Hours,tab[i].time_end.RTC_Minutes,tab[i].time_end.RTC_Seconds,tab[i].time_end.RTC_Date,tab[i].time_end.RTC_Month,tab[i].time_end.RTC_Year+2000);
-
-			   }
-		   }
-	   break;
-
-
-
-	   default:  printf("\r Failure msg_id (%d) \n",rx_tcp_msg.msg_id);
-
-	   break;
-
-	}
 }
 
 
@@ -974,12 +859,12 @@ void CMD_GetAll(void)
 	if((ts[0].sbrw > 0) && (ts[1].sbrw == 0)) // Читаю только Nand-0
 	{
 		recive_index = 0;
-	    CMD_GetSuperBlock(ts[0].file_index[0],ts[0].file_index[1]);
+//	    CMD_GetSuperBlock(ts[0].file_index[0],ts[0].file_index[1]);
 	}
 	else if((ts[1].sbrw > 0) && (ts[0].sbrw == 0)) // Читаю только Nand-1
 	{
 		recive_index = 1;
-	    CMD_GetSuperBlock(ts[1].file_index[0],ts[1].file_index[1]);
+//	    CMD_GetSuperBlock(ts[1].file_index[0],ts[1].file_index[1]);
 	}
 	else 
 	{
@@ -991,13 +876,13 @@ void CMD_GetAll(void)
     		if(ts[0].sbrw > 0)
 			{
 				recive_index = 0;
-	            CMD_GetSuperBlock(ts[0].file_index[0],ts[0].file_index[1]);
+//	            CMD_GetSuperBlock(ts[0].file_index[0],ts[0].file_index[1]);
 			}
 	
 			if(ts[1].sbrw > 0)
 			{
 				recive_index = 1;
-	            CMD_GetSuperBlock(ts[1].file_index[0],ts[1].file_index[1]);
+//	            CMD_GetSuperBlock(ts[1].file_index[0],ts[1].file_index[1]);
 			}
 
 		}
@@ -1009,13 +894,13 @@ void CMD_GetAll(void)
 	    	if(ts[1].sbrw > 0)
 			{
 				recive_index = 1;
-	            CMD_GetSuperBlock(ts[1].file_index[0],ts[1].file_index[1]);
+//	            CMD_GetSuperBlock(ts[1].file_index[0],ts[1].file_index[1]);
 			}
 	
     		if(ts[0].sbrw > 0)
 			{
 				recive_index = 0;
-	            CMD_GetSuperBlock(ts[0].file_index[0],ts[0].file_index[1]);
+//	            CMD_GetSuperBlock(ts[0].file_index[0],ts[0].file_index[1]);
 			}
 		}
 	}
@@ -1269,33 +1154,6 @@ void CMD_SetMapBB(void)
 
 int CMD_GetBmark(int param)
 {
-//	if(!UdpInitial()) return 0;
-
-	param &= 0xf;
-
-	if(SendRecvMessage(GET_BM,&param,1,GET_BM+100,&ts,sizeof(ts),3))
-//	if(SendRecvMessage(GET_SYS_INFO_2,NULL,0,GET_SYS_INFO_2+100,&ts,sizeof(ts),3))
-	{
-		printf("\n current unit_index  %d   \n",ts[0].unit_index);
-	
-	    for(int i = 0; i < 2; i++)
-		{
-			printf("\n unit_index  %d   \n",i);
- 		    printf("\r total files write  %d   \n",ts[i].sbrw);
-      	    printf("\r begin files num    %d   \n",ts[i].file_index[0]);
-    	    printf("\r end files num      %d   \n",ts[i].file_index[1]);
-            printf("\r time begin %dh : %dm : %ds   %d-%d-%d \n",ts[i].time_begin.RTC_Hours,ts[i].time_begin.RTC_Minutes,ts[i].time_begin.RTC_Seconds,ts[i].time_begin.RTC_Date,ts[i].time_begin.RTC_Month,ts[i].time_begin.RTC_Year+2000);
-  	        printf("\r time end   %dh : %dm : %ds   %d-%d-%d \n",ts[i].time_end.RTC_Hours,ts[i].time_end.RTC_Minutes,ts[i].time_end.RTC_Seconds,ts[i].time_end.RTC_Date,ts[i].time_end.RTC_Month,ts[i].time_end.RTC_Year+2000);
-		}
-		
-	    return 1;
-
-	
-	}
-	else
-	{
-		printf("\n get bookmark FAILURE \n");
-	}
 
 
 	return 0;

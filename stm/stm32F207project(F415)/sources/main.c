@@ -35,33 +35,8 @@ int msg_32bit_size;
 int get_page;
 int rew_status = 0;
 
-
 __IO uint32_t LocalTime;
 
-
-void TIM77_Config(uint32_t period)
-{  
-  NVIC_DisableIRQ(TIM7_IRQn);  
-  TIM_ITConfig(TIM7,TIM7_IRQn, DISABLE);
-  
-   
-  TIM_Cmd(TIM7, DISABLE);
-  TIM_TimeBaseInitTypeDef    TIM_TimeBaseStructure;
-  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM7, ENABLE);
-  TIM_TimeBaseStructInit(&TIM_TimeBaseStructure);
-  TIM_TimeBaseStructure.TIM_Period = period*2;
-  TIM_TimeBaseStructure.TIM_Prescaler =   30-1; // 1 mks
-  TIM_TimeBaseStructure.TIM_ClockDivision = 0;
-  TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
-  TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;//period*2-1;
-  TIM_TimeBaseInit(TIM7, &TIM_TimeBaseStructure);
-  TIM_SelectOutputTrigger(TIM7, TIM_TRGOSource_Update);
-  TIM_ITConfig(TIM7,TIM7_IRQn, ENABLE);  
-  NVIC_EnableIRQ(TIM7_IRQn);  
-  TIM_Cmd(TIM7, ENABLE);
-}
-
- 
 ////////////////////////////////////////////////////////////////////////////////
 // MAIN * MAIN * MAIN * MAIN * MAIN * MAIN * MAIN * MAIN * MAIN * MAIN * MAIN * 
 ////////////////////////////////////////////////////////////////////////////////
@@ -76,9 +51,7 @@ void main()
   tx_udp_msg_size   = sizeof(tx_udp_msg)  / MAX_UDP_SOCK;
     
   SysTim_Config();
-  
-  I2C1_Config();
-  
+    
   ETH_Config();
      
   RTC_Config();
@@ -89,8 +62,10 @@ void main()
  
   SRAM_Config();
   
-  info_ini.IS61_error = SRAM_Test();
-  
+//  info_ini.IS61_error = SRAM_Test();
+    
+  I2C1_Config();
+    
   f415_SPI_Config();
   
   f415_I2C_Config();
