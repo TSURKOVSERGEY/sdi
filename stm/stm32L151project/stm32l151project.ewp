@@ -1873,10 +1873,16 @@
   <group>
     <name>sources</name>
     <file>
-      <name>$PROJ_DIR$\sources\command_handler.c</name>
+      <name>$PROJ_DIR$\sources\adpcm_coder.c</name>
     </file>
     <file>
       <name>$PROJ_DIR$\sources\config.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\sources\i2c_f207.c</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\sources\i2c_f207.h</name>
     </file>
     <file>
       <name>$PROJ_DIR$\sources\main.c</name>
@@ -1885,16 +1891,19 @@
       <name>$PROJ_DIR$\sources\main.h</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\sources\spi_L151.c</name>
+      <name>$PROJ_DIR$\sources\spi_f207.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\sources\spi_L151.h</name>
+      <name>$PROJ_DIR$\sources\spi_f207.h</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\sources\spi_PGA112.c</name>
+      <name>$PROJ_DIR$\sources\spi_pga112.c</name>
     </file>
     <file>
-      <name>$PROJ_DIR$\sources\spi_PGA112.h</name>
+      <name>$PROJ_DIR$\sources\spi_pga112.h</name>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\sources\transmit_handler.c</name>
     </file>
   </group>
   <group>

@@ -5,7 +5,7 @@ extern adpcm_message_struct   adpcm_msg[2];
 extern adpcm_page_ctrl_struct adpcm_ctrl[MAX_CHANNEL];
 extern adpcm_page_struct     *padpcm[2][MAX_CHANNEL];
 extern uint8_t                adpcm_ready;
-extern initial_info_struct    info_ini;
+extern total_info_struct      t_info;
 extern uint16_t spi_dma_buffer[2][SPI_RX_DMA];
 extern int msg_8bit_size;
 extern int msg_16bit_size;
@@ -57,10 +57,12 @@ void DMA1_Stream0_IRQHandler(void)
          {
            if(adpcm_msg[msg_index].msg_id == F415_CHECK_SPI_CONNECT+100)
            {
-             info_ini.f415_spi_error = 0;
+             t_info.f415_spi1_error = 0;
+             t_info.f415_mode = F415_STOP_MODE;
            }
            else if(adpcm_msg[msg_index].msg_id == F415_AUDIO_STREAM)
            {
+               t_info.f415_mode = F415_AUDIO_STREAM_MODE;
                for(i = 0; i < MAX_CHANNEL; i++)
                {   
                  id  = adpcm_ctrl[i].id;
@@ -75,7 +77,7 @@ void DMA1_Stream0_IRQHandler(void)
                  {
                    padpcm[id][i]->prevsample = adpcm_msg[msg_index].adpcm_block[i].prevsample;
                    padpcm[id][i]->previndex =  adpcm_msg[msg_index].adpcm_block[i].previndex;
-                   padpcm[id][i]->id = i;
+                   padpcm[id][i]->channel_id = i;
                    padpcm[id][i]->time = GetTime();
                    adpcm_ctrl[i].crc = crc32_t(-1,padpcm[id][i],116,116);
                  }
@@ -104,7 +106,7 @@ void DMA1_Stream0_IRQHandler(void)
           if(msg_id[0] != (msg_id[1]+1))
           {
             //sys_info.L151_stream_error++;
-            alarm_data.err_crc_binar++;
+            t_info.crc_binar_error++;
           }
           
           msg_id[1] = msg_id[0];

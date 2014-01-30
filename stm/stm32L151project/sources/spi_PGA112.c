@@ -146,4 +146,3 @@ void PGA112_WriteData(int CS, unsigned short gain, unsigned short channel)
 void PGA112_Set_CS(CS_TypeDef CS){ GPIO_PORT[CS]->BSRRH = GPIO_PIN[CS]; }
 
 void PGA112_Clr_CS(CS_TypeDef CS){ GPIO_PORT[CS]->BSRRL = GPIO_PIN[CS]; }
-

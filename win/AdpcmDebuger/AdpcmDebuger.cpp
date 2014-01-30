@@ -95,7 +95,7 @@ int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 
 
 	int                  my_player;
-    int                  fsize;
+    unsigned int                  fsize;
 	unsigned int         channel_id = 0;
 	char                 fname[100];
 
@@ -172,6 +172,8 @@ int _tmain(int argc, TCHAR* argv[], TCHAR* envp[])
 	int h,m,s;
 
 	int i = 0;
+
+	Sleep(200);
 
 	while(fsize > 0)
 	{

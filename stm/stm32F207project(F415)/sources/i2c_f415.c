@@ -1,31 +1,87 @@
 #include "main.h"
 #include "i2c_f415.h"
 
-extern initial_info_struct      info_ini;
+extern total_info_struct      t_info;
 
-uint32_t  f415_I2C_Config(void)
+uint32_t  f415_Config(void)
 {
-  uint32_t Timeout = 0xffffff; 
+  uint32_t Timeout = 100; 
+  uint8_t  f415_error[2];
+  uint8_t  pga112_gain[16];
   
+  // отключение режима аудио потока (если был)
   if(!f415_WriteMessage(F415_STOP_STREAM,NULL,0)) 
   {
-    return 0;
-  }
-  else if(!f415_WriteMessage(F415_CHECK_I2C_CONNECT,NULL,0)) 
-  {
-    return 0;
-  }
-  else 
-  {
-    delay(100);
-    if(!f415_ReadMessage(F415_CHECK_I2C_CONNECT+100,NULL,0)) return 0;
+      return 0;
   }
 
-  info_ini.f415_spi_error = 1;
-
-  if(!f415_WriteMessage(F415_CHECK_SPI_CONNECT,NULL,0)) return 0;
+  delay(100);
   
-  while(info_ini.f415_spi_error){ if((Timeout--) == 0) return 0; }
+  // проверка i2c интерфейса
+  if(!f415_WriteMessage(F415_CHECK_I2C_CONNECT,NULL,0)) 
+  {
+     return 0;
+  }
+
+  delay(100);
+  
+  if(!f415_ReadMessage(F415_CHECK_I2C_CONNECT+100,NULL,0))  
+  {
+    return 0;
+  }
+
+  delay(100);
+  
+  // проверка spi интерфейса
+  if(!f415_WriteMessage(F415_CHECK_SPI_CONNECT,NULL,0)) 
+  {
+    return 0;
+  }
+  
+  while(t_info.f415_spi1_error == 1)
+  { 
+    if((Timeout--) == 0)
+    {
+      return 0;
+    }
+    else delay(10);
+  }
+  
+  // проверка ошибок конфигурации F415 (L151)
+   if(!f415_WriteMessage(F415_CHECK_ERROR,NULL,0)) 
+   {
+     return 0;
+   }
+
+  delay(100);
+  
+  if(f415_ReadMessage(F415_CHECK_ERROR+100,(uint8_t*)f415_error,sizeof(f415_error)))  
+  {
+    t_info.f415_spi2_error = f415_error[0];
+    t_info.f415_adc_config_error = f415_error[1];
+  }
+  else return 0;
+
+ // запрос коэффициентов усиления pga_112
+  if(!f415_WriteMessage(F415_GET_GAIN,NULL,0)) 
+  {
+     return 0;
+  }
+
+  delay(100);
+  
+  if(f415_ReadMessage(F415_GET_GAIN+100,pga112_gain,sizeof(pga112_gain)))  
+  {
+    for(int i = 0; i < 16; i++)
+    {
+      t_info.pga112_gain[i] = pga112_gain[i];
+    }
+
+  }
+  else return 0;
+
+  
+  
   
   return 1;
 }
@@ -57,7 +113,7 @@ void I2C1_Config(void)
   
   I2C_Cmd(I2C1, ENABLE);  
   
-  f415_WriteMessage(F415_STOP_STREAM,NULL,0);
+  //f415_WriteMessage(F415_STOP_STREAM,NULL,0);
 
 }
 
@@ -75,7 +131,7 @@ uint32_t f415_WriteMessage(uint16_t msg_id, uint8_t pbuffer[], uint8_t msg_len)
   
   tx_f415_msg.msg_crc = crc32(((uint8_t*)&tx_f415_msg)+4,msg_len+4,msg_len+4); 
 
-  if(info_ini.f415_i2c_error = f415_Write((uint8_t*) &tx_f415_msg,msg_len+8)) return 0;
+  if(t_info.f415_i2c_error = f415_Write((uint8_t*) &tx_f415_msg,msg_len+8)) return 0;
   
   return 1;
   
@@ -85,7 +141,7 @@ uint32_t f415_ReadMessage(uint16_t msg_id, uint8_t pbuffer[], uint8_t msg_len)
 {
   f415_message_struct rx_f415_msg;
   
-  if(info_ini.f415_i2c_error = f415_Read((uint8_t*) &rx_f415_msg,msg_len+8)) return 0;
+  if(t_info.f415_i2c_error = f415_Read((uint8_t*) &rx_f415_msg,msg_len+8)) return 0;
   else if(!rx_f415_msg.msg_crc == crc32(((uint8_t*)&rx_f415_msg)+4,msg_len+4,msg_len+4)) return 0;
        else if(rx_f415_msg.msg_id != msg_id) return 0;
             else if(pbuffer)

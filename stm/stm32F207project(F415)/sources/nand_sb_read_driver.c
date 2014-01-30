@@ -5,8 +5,10 @@
 #define ONE_PAGE   1
 #define ALL_PAGE   0
 
+extern uint8_t                 server_control[2][MAX_FILE];
 extern                         udp_message_struct  tx_udp_msg[MAX_UDP_SOCK];
 extern alarm_struct            alarm_data;
+extern total_info_struct       t_info;
 extern super_block_struct*     prsb;
 static page_header_struct      ph;
 
@@ -15,6 +17,8 @@ static void ReadSuperBlockHeader(uint32_t adr, int read_mode);
 static int CheckSuperBlock(void);
 extern int rew_status;
 extern int wait_state;
+
+static void ClrServerControlBit(uint32_t unit_index, uint32_t sb_index);
 
 
 void GetSuperBlockPage(uint32_t page_address)
@@ -83,6 +87,7 @@ void GetSuperBlockHeader(uint32_t unit_index, uint32_t sb_index)
     psbh->time_close = prsb->time_close; 
     psbh->sb_num = prsb->sb_num;
     psbh->page_real_write = prsb->page_real_write;
+    ClrServerControlBit(unit_index,sb_index);
   }
   else
   {
@@ -119,7 +124,7 @@ void nand_sb_read_handler(void)
          if(crc32(padpcm,ADPCM_BLOCK_SIZE-4,ADPCM_BLOCK_SIZE-4) != padpcm->crc) 
          {
            ph.page_index = 0;
-           alarm_data.err_crc_rd_Nand++;
+           t_info.crc_rd_nand_error++;
            pin  = (uint32_t*)&tx_udp_msg[SERV].data[PAGE_HEADER_SIZE];
            memcpy(&tx_udp_msg[SERV].data[0],&ph,PAGE_HEADER_SIZE);
            for(i = 0; i < (half_adpcm_size / 4); i++) *(pin++) = 0;
@@ -217,4 +222,13 @@ static int CheckSuperBlock(void)
 {
   if(prsb->id == SUPER_BLOCK_ID) return 1;
   else return 0;
+}
+
+void ClrServerControlBit(uint32_t unit_index, uint32_t sb_index)
+{
+  if(sb_index < MAX_FILE)
+  {
+    server_control[unit_index][sb_index] = 0;
+  }
+  
 }

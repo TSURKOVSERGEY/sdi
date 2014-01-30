@@ -8,7 +8,7 @@ extern struct pbuf*            pout[MAX_UDP_SOCK];
 extern int                     rew_status[MAX_UDP_SOCK];
 extern udp_message_struct      tx_udp_msg[MAX_UDP_SOCK];
 extern udp_message_struct      rx_udp_msg[MAX_UDP_SOCK];
-extern initial_info_struct     info_ini;
+extern total_info_struct       t_info;
 extern uint32_t                msg_id;
 extern uint32_t                rx_udp_msg_size;
 extern uint32_t                tx_udp_msg_size;
@@ -68,7 +68,7 @@ void ETH_Config(void)
 
   if(ETH_BSP_Config() == ETH_ERROR)
   {
-    info_ini.eth_bsp_error = 1;
+    t_info.eth_bsp_error = 1;
   }
   else 
   {
@@ -87,11 +87,11 @@ void UDP_Config(void)
   {
     if((pudp_pcb[i] = udp_new()) == NULL) 
     {
-      info_ini.eth_udp_error[i] = 1;
+      t_info.eth_udp_error[i] = 1;
     }
     else if((udp_bind(pudp_pcb[i],IP_ADDR_ANY,eth_ini_dat.UDP_RX_PORT[i]) != ERR_OK))
     {
-      info_ini.eth_udp_error[i] = 1;
+      t_info.eth_udp_error[i] = 1;
     }
   
     switch(i)

@@ -2,20 +2,21 @@
 #include "at24c512.h"
 #include "ethernet.h"
 #include "i2c_f415.h"
+#include "nand_hw_driver.h"
 
 extern tab_struct               tab;
-extern initial_info_struct      info_ini;
+extern total_info_struct        t_info;
 extern udp_message_struct       tx_udp_msg[2];
 extern udp_message_struct       rx_udp_msg[2];
 extern alarm_struct             alarm_data; 
 extern ethernet_initial_struct  eth_ini_dat;
 extern bad_block_map_struct*    pmap_bb;
+extern total_work_struct        tws;
  
 void cmd_handler(int id)
 {
-  int i;
-  uint8_t index,index_pos;
-  
+    int i;
+ 
     switch(rx_udp_msg[id].msg_id)
     {
       case CHECK_CONNECT: 
@@ -38,7 +39,6 @@ void cmd_handler(int id)
            
       break;
       
-           
       case GET_SB_HEADER: 
         
            GetSuperBlockHeader(*((uint32_t*)&rx_udp_msg[id].data[0]),*((uint32_t*)&rx_udp_msg[id].data[4]));
@@ -49,69 +49,50 @@ void cmd_handler(int id)
           
            GetSuperBlockPage(*((uint32_t*)&rx_udp_msg[id].data[0]));
  
-       break;
+      break;
       
-          
       case START_AUDIO_STREAM:
-        
+
+          t_info.f207_mode = F207_AUDIO_STREAM_MODE;
           f415_WriteMessage(F415_START_STREAM,NULL,0);
           SendMessage(id,START_AUDIO_STREAM + 100,NULL,0);
-       
+          
       break;
       
       case STOP_AUDIO_STREAM: 
-
+    
+          t_info.f207_mode = F207_STOP_MODE;
           f415_WriteMessage(F415_STOP_STREAM,NULL,0);
           SendMessage(id,STOP_AUDIO_STREAM + 100,NULL,0);
-           
+          
       break;  
       
-      case SET_GAIN: 
-      break;
-      
-      case GET_SYS_INFO_0:
-      break;
+      case SET_GAIN:
         
-      case GET_SYS_INFO_1:
       break;
       
-      case GET_SYS_INFO_2:
+      case GET_SYS_INFO:
+          
+          SendMessage(id,GET_SYS_INFO + 100,&tab,sizeof(tab_struct));  
         
-           SendMessage(id,GET_SYS_INFO_2 + 100,tab,sizeof(tab_struct));
-           
       break;
-      
-      case GET_BM:
-
-          index = alarm_data.bookmark_index;
-          index_pos = rx_udp_msg[id].data[0] + 1;
-          while(index_pos-- > 0) index = (index - 1) & 0xf;
-          SendMessage(id,GET_BM + 100,&alarm_data.bms[index],sizeof(tab_struct));
- 
-      break;      
-      
-      case SET_FIXED: 
+       
+      case GET_TOTAL_INFO:
         
-           if(alarm_data.fixed_index[0] != rx_udp_msg[id].data[0])
-           {
-             alarm_data.fixed_index[0] = rx_udp_msg[id].data[0];
-             alarm_data.close_file_flag = 1;
-           }
-           
-           SendMessage(id,SET_FIXED + 100,NULL,0);
-                   
-      break;
-      
-      case GET_FIXED: 
-     
-           SendMessage(id,GET_FIXED + 100,&alarm_data.fixed_index[1],1);
+        t_info.nand_work_counter[0] = tws.total_cucle[0];
+        t_info.nand_work_counter[1] = tws.total_cucle[1];
+        t_info.total_time           = tws.total_time;
+        t_info.current_time         = GetTime();
+        
+        SendMessage(id,GET_TOTAL_INFO + 100,&t_info,sizeof(total_info_struct)); 
                 
       break;
       
+ 
       case GET_ETH_PARAM:
         
-           info_ini.at24_error = AT24_Read(0,(uint8_t*)&eth_ini_dat,sizeof(eth_ini_dat));
-           SendMessage(id,GET_ETH_PARAM + 100,&eth_ini_dat,sizeof(eth_ini_dat));
+       //   t_info.at24_error = AT24_Read(0,(uint8_t*)&eth_ini_dat,sizeof(eth_ini_dat));
+          SendMessage(id,GET_ETH_PARAM + 100,&eth_ini_dat,sizeof(eth_ini_dat));
            
       break;
 
@@ -128,35 +109,44 @@ void cmd_handler(int id)
         }
         
         eth_ini_dat.crc = crc32(&eth_ini_dat,sizeof(eth_ini_dat)-4,sizeof(eth_ini_dat)-4);
-        info_ini.at24_error = AT24_Write(AT45ADR_ETH_PARAM,(uint8_t*)&eth_ini_dat,sizeof(eth_ini_dat));
+        //info_ini.at24_error = AT24_Write(AT45ADR_ETH_PARAM,(uint8_t*)&eth_ini_dat,sizeof(eth_ini_dat));
         SendMessage(id,SET_ETH_PARAM + 100,NULL,0);
         
       break;    
       
-      case SET_MAP_BB:
+      case FORMAT_MAP_BB:
         
-        pmap_bb->bad_block_number = 0;
-        for(i = 0; i < MAX_PAGE; i++) pmap_bb->block_address[i] = BLOCK_GOOD;
-        CRC_ResetDR();
-        pmap_bb->crc = CRC_CalcBlockCRC((uint32_t*)pmap_bb,(sizeof(bad_block_map_struct)-4)/4); 
-        info_ini.at24_error = AT24_Write(AT45ADR_MAP_BB,(uint8_t*)pmap_bb,sizeof(bad_block_map_struct));
-        SendMessage(id,SET_MAP_BB + 100,NULL,0);
+        nand_erase_block(0,MAP_BB_ADDRES * 64); // первая копия карты
+        nand_erase_block(1,MAP_BB_ADDRES * 64); // вторая копия карты
         
-      break;    
-       
-      case SET_CFI:
-        
-        alarm_data.close_file_flag = 1;
-        SendMessage(id,SET_CFI + 100,NULL,0);
-       
-      break;    
+        for(i = 0; i < MAP_BB_MAX_BLOCK; i++) pmap_bb->block_address[i] = BLOCK_GOOD;
 
-      case GET_CFI:
-
-        SendMessage(id,GET_CFI + 100,&alarm_data.close_file_flag,1);
+        pmap_bb->crc = crc32((uint8_t*)pmap_bb,MAP_BB_MAX_BLOCK,MAP_BB_MAX_BLOCK); 
         
-      break;    
+        nand_16bit_write_page(0,(uint16_t*)pmap_bb,MAP_BB_ADDRES * 64); // первая копия карты
+        nand_16bit_write_page(1,(uint16_t*)pmap_bb,MAP_BB_ADDRES * 64); // вторая копия карты
+       
+        SendMessage(id,FORMAT_MAP_BB + 100,NULL,0);
+        
+      break; 
       
+      case FORMAT_TWS:
+        
+        nand_erase_block(0,TWS_ADDRES * 64); // первая копия 
+        nand_erase_block(1,TWS_ADDRES * 64); // вторая копия 
+
+        memset(&tws,0,sizeof(total_work_struct));
+  
+        tws.crc  = crc32((uint8_t*)&tws,sizeof(total_work_struct)-4,sizeof(total_work_struct)); 
+   
+        nand_16bit_write_page_ext(0,(uint16_t*)&tws,TWS_ADDRES * 64,sizeof(total_work_struct)); // первая копия 
+        nand_16bit_write_page_ext(1,(uint16_t*)&tws,TWS_ADDRES * 64,sizeof(total_work_struct)); // вторая копия 
+        
+        SendMessage(id,FORMAT_TWS + 100,NULL,0);
+        
+       break;     
+        
+       
       
     }
 }

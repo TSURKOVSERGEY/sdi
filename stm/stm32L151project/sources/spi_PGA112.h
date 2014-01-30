@@ -1,4 +1,3 @@
-
 #define CSn     16
  
 typedef enum {CS0,CS1,CS2,CS3,CS4,CS5,CS6,CS7,CS8,CS9,CS10,CS11,CS12,CS13,CS14,CS15} CS_TypeDef;
@@ -79,4 +78,3 @@ void SPI_PGA112_CS_GPIO_Config(CS_TypeDef CS);
 void PGA112_Set_CS(CS_TypeDef CS);
 
 void PGA112_Clr_CS(CS_TypeDef CS);
-

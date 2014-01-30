@@ -24,10 +24,13 @@ static char THIS_FILE[] = __FILE__;
 #define START_AUDIO_STREAM   2
 #define STOP_AUDIO_STREAM    3
 
-#define GET_SYS_INFO_0       20
-#define GET_SYS_INFO_1       21
-#define GET_SYS_INFO_2       22
-#define GET_SYS_INFO_3       23
+#define GET_SYS_INFO         20
+#define GET_TOTAL_INFO       21
+
+#define GET_SB_HEADER        30
+#define GET_PAGE             31
+#define GET_TIME             32
+#define GET_ETH_PARAM        33
 
 
 #define GET_SB_HEADER        30
@@ -40,13 +43,12 @@ static char THIS_FILE[] = __FILE__;
 
 
 #define SET_GAIN             40
-#define RESERV               41
 #define SET_TIME             42
 #define SET_ETH_PARAM        43
-#define SET_MAP_BB           44
-#define SET_FIXED            45
-#define SET_SYS_INFO_0       46
-#define SET_CFI              47
+#define FORMAT_MAP_BB        44
+#define FORMAT_TWS           45
+
+
 
 #define TCP_DATA_SIZE        1026
 #define TCP_HEADER_SIZE      12
@@ -62,6 +64,9 @@ static char THIS_FILE[] = __FILE__;
 #define SET_UDP_RX1_PORT     6
 #define SET_UDP_TX1_PORT     7
 #define SET_UDP_RX2_PORT     8
+
+
+char STM_ADR[] = {"192.9.206.204"}; 
 
 //#define SERV
 #define PTUK
@@ -88,7 +93,45 @@ static char THIS_FILE[] = __FILE__;
 FILE *pf;
 
 /////////////////////////////////////////////////////////////////////////////
+#pragma pack(push,1)   
+ typedef struct  
+ { 
+   unsigned int eth_bsp_error;               // (0)     
+   unsigned int eth_udp_error[3];            // (1+2+3) 
+   unsigned int IS61_error;                  // (4)     
+   unsigned int f415_i2c_error;              // (5)    
+   unsigned int read_eth_ini_error[2];       // (6+7)   
+   unsigned int read_total_time_error[2];    // (8+9)  
+   unsigned int read_map_bb_error[2];        // (10+11) 
+   unsigned int rtc_error;                   // (12)    
+   unsigned int f_write_error;               // (13)    
+   unsigned int server_error;                // (14)   
+   unsigned int f415_spi1_error;             // (15)  
+   unsigned int f415_spi2_error;             // (16)   
+   unsigned int f415_adc_config_error;       // (17)   
+   unsigned int crc_binar_error;             // (18)    
+   unsigned int crc_wr_nand_error;           // (19)    
+   unsigned int crc_rd_nand_error;           // (20)  
 
+   unsigned int bad_block_number;            
+   unsigned int nand_work_counter[2];     
+   unsigned int f415_gain_param[16];      
+   unsigned int f415_mode;                 
+   unsigned int f207_mode;               
+   unsigned int current_time[2];            
+   unsigned int total_time[2];   
+   
+   unsigned int f_o;
+   unsigned int f_c;
+   unsigned int f_w;
+
+
+
+
+
+
+ } total_info_struct;
+#pragma pack(pop)
 
 #pragma pack(push,1)  
     struct tcp_message
@@ -134,9 +177,7 @@ typedef struct
 struct tab_struct
 {
 	unsigned int unit_index;
-	unsigned int sbw;
 	unsigned int sbrw;
- 	unsigned int file_index[2];
 	time_struct  time_begin;
     time_struct  time_end;
 
@@ -156,33 +197,90 @@ int recive_index = 0;
 
 FILE        *fp;
 
-char STM_ADR[] = {"192.9.206.201"}; 
+
+
+  const char* error_buffer[] = 
+  {	
+	" eth_bsp_error",        
+	" eth_udp_socet_error (SERVER)",  
+	" eth_udp_socet_error (PTUC)", 
+	" eth_udp_socet_error (SEV)",           
+	" IS61_error",          
+    " f415_i2c_error (F207_F415)",
+	" read_eth_ini_error (first  copy)",
+    " read_eth_ini_error (second copy)",
+	" read_total_time_error (first  copy)", 
+    " read_total_time_error (second copy)", 
+	" read_map_bb_error (first  copy)",       
+	" read_map_bb_error (second copy)",       
+	" rtc_error",
+	" f_write_error",
+	" server_error",
+	" f415_spi1_error (f415->f207)",
+	" f415_spi2_error (f415->pga112)",
+	" f415_adc_config_error",
+	" crc_binar_error",
+	" crc_wr_nand_error",
+	" crc_rd_nand_error",
+
+	"\n bad_block_number",
+	"\n nand_work_counter (first  plase)",
+	"\n nand_work_counter (second plase)",
+	"\n f415_gain_param (chanel-0)",
+	"\n f415_gain_param (chanel-1)",
+	"\n f415_gain_param (chanel-2)",
+	"\n f415_gain_param (chanel-3)",
+	"\n f415_gain_param (chanel-4)",
+	"\n f415_gain_param (chanel-5)",
+	"\n f415_gain_param (chanel-6)",
+	"\n f415_gain_param (chanel-7)",
+	"\n f415_gain_param (chanel-8)",
+	"\n f415_gain_param (chanel-9)",
+	"\n f415_gain_param (chanel-10)",
+	"\n f415_gain_param (chanel-11)",
+	"\n f415_gain_param (chanel-12)",
+	"\n f415_gain_param (chanel-13)",
+	"\n f415_gain_param (chanel-14)",
+	"\n f415_gain_param (chanel-15)",
+	
+	"\n f415_mode"
+	"\n f207_mode"
+	"\n current_time",
+	"\n total_time"
+	
+  };
+
 
 /////////////////////////////////////////////////////////////////////////////
 
 void CMD_SetTime(void);
 void CMD_GetTime(void);
 int  CMD_CheckConnect(void);
-void CMD_GetSysinfo(void);
+void CMD_GetSysInfo(void);
+void CMD_GetTotalInfo(void);
+
 void CMD_GetSuperBlock(int f_id1, int f_id2);
 
 void CMD_Start(void);
 void CMD_Stop(void);
 void CMD_SetEthParam(int mode);
 void CMD_GetEthParam(void);
-void CMD_SetMapBB(void);
-int  CMD_SetFixed(unsigned char* pfixed_index);
-int  CMD_GetFixed(unsigned char* pfixed_index);
+void CMD_FormatMapBB(void);
+void CMD_FormatTWS(void);
 
-int  CMD_GetBmark(int param);
+
+//int  CMD_SetFixed(unsigned char* pfixed_index);
+//int  CMD_GetFixed(unsigned char* pfixed_index);
+
+//int  CMD_GetBmark(int param);
 void CMD_SetIP(void);
 void CMD_GetIP(void);
 void CMD_SetIndex(void);
-void CMD_GetAll(void);
+//void CMD_GetAll(void);
 void CMD_fClose(void);
 int  CMD_fOpen(void);
-int  CMD_GetCloseFileIndex(unsigned char *pindex);
-int  CMD_SetCloseFileIndex(void);
+//int  CMD_GetCloseFileIndex(unsigned char *pindex);
+//int  CMD_SetCloseFileIndex(void);
 
 
 
@@ -283,7 +381,7 @@ int GetID(char *name)
 	"start",          // 1
     "stop",           // 2
 	"info",           // 3
-	"l151",           // 4
+	"total",          // 4
     "gain",           // 5
 	"gsb",            // 6
 	"settime",        // 7
@@ -298,7 +396,7 @@ int GetID(char *name)
     "eth_udprx2port", // 16
     "geteth",         // 17
 	"mapbb",          // 18
-	"bm",             // 19
+	"tws",            // 19
 	"fix",            // 20
 	"iip",            // 21
 	"ip",             // 22
@@ -313,6 +411,7 @@ int GetID(char *name)
   return -1;
 }
 
+/*
 
 void GetAllTimer(void)
 {
@@ -333,7 +432,7 @@ void GetAllTimer(void)
 
 
 }
-
+*/
 
 void main_handler(void)
 {
@@ -378,9 +477,9 @@ void main_handler(void)
 		    case 0:  CMD_CheckConnect();         break;
  			case 1:  CMD_Start();                break;
  			case 2:  CMD_Stop();                 break;
- 			case 3:  CMD_GetSysinfo();           break;
- 			case 4:  CMD_SetSysinfo();           break;
- //			case 5:  SetGain();                  break;
+ 			case 3:  CMD_GetSysInfo();           break;
+ 			case 4:  CMD_GetTotalInfo();         break;
+//			case 5:  SetGain();                  break;
 			case 6:  
 			
 				if(CMD_fOpen())
@@ -401,16 +500,18 @@ void main_handler(void)
             case 15: CMD_SetEthParam(7);         break;
             case 16: CMD_SetEthParam(8);         break;
             case 17: CMD_GetEthParam();          break;
-            case 18: CMD_SetMapBB();             break;
-            case 19: CMD_GetBmark(param1);       break;
-            case 20: CMD_SetFixed(NULL);         break;
+            case 18: CMD_FormatMapBB();          break;
+            case 19: CMD_FormatTWS();            break;
+
+//          case 19: CMD_GetBmark(param1);       break;
+//          case 20: CMD_SetFixed(NULL);         break;
             case 21: CMD_GetIP();                break;
             case 22: CMD_SetIP();                break;
             case 23: CMD_SetIndex();             break;
             
 			case 24: 
 			
-				GetAllTimer();
+//				GetAllTimer();
 				//CMD_GetAll();               
 				
 		    break;
@@ -498,7 +599,7 @@ void SendMessage(unsigned int msg_id, void* data, unsigned int len)
 int RecvMessage(unsigned int msg_id, void* data, unsigned int len)
 {
 
-	int status = 0,time_out = 10, result;
+	int status = 0,time_out = 2, result;
 
 	fd_set  r;
 	timeval t;
@@ -519,9 +620,12 @@ int RecvMessage(unsigned int msg_id, void* data, unsigned int len)
 	   }
 	   else if((result != 0) && (FD_ISSET(client_socket,&r)))
 	   {
+		   time_out = 0;
 		   break;
 	   }
 	}
+
+	if(time_out < 0) return status;
  
 	if(recv(client_socket,(char*)&rx_tcp_msg,sizeof(rx_tcp_msg),0) <= 0) return status;
 
@@ -658,6 +762,7 @@ int CMD_CheckConnect(void)
 }
 
 
+/*
 void CMD_SetSysinfo(void)
 {
 	if(!UdpInitial()) return;
@@ -672,39 +777,20 @@ void CMD_SetSysinfo(void)
 		printf("\n set request l151 failure");
 	}
 }
+*/
 
 
-
-void CMD_GetSysinfo(void)
+void CMD_GetSysInfo(void)
 {
 	printf("\n");
 
 	if(!UdpInitial()) return;
 
 
-	switch(param1)
-	{
-	   case 0: printf("\r info < L151 > \n");
-	   break;
-
-	   case 1: printf("\r info < MT29F4 > \n");
-	   break;
-
-	   case 2: printf("\r info < files real write > \n");
-	   break;
-
-	   default: return;
-	
-	}
-
-	int cmd = GET_SYS_INFO_0 + param1;
+	int cmd = GET_SYS_INFO;
 
  	SendMessage(cmd,NULL,0);
 	
-	if(cmd == GET_SYS_INFO_3)
-	{
-		Sleep(500);
-	}
 	
 	if(RecvMessage(cmd+100,NULL,0) == 0)
 	{
@@ -713,119 +799,74 @@ void CMD_GetSysinfo(void)
 	}
 
 
-	  
-	switch(rx_tcp_msg.msg_id)
+   struct tab
+   {   unsigned int unit_index;
+       unsigned int sbrw;
+	   time_struct  time_begin;
+       time_struct  time_end;
+   } tab[2];
+			   
+			   
+  memcpy(tab,&rx_tcp_msg.data[0],sizeof(tab));
+
+   for(int i = 0; i < 2; i++)
+   {
+	   printf("\n unit_index  %d ",i);
+       printf("\n current_write_index  %d \n",tab[i].unit_index);
+	   printf("\r total files write  %d   \n",tab[i].sbrw);
+       printf("\r time begin %dh : %dm : %ds   %d-%d-%d \n",tab[i].time_begin.RTC_Hours,tab[i].time_begin.RTC_Minutes,tab[i].time_begin.RTC_Seconds,tab[i].time_begin.RTC_Date,tab[i].time_begin.RTC_Month,tab[i].time_begin.RTC_Year+2000);
+       printf("\r time end   %dh : %dm : %ds   %d-%d-%d \n",tab[i].time_end.RTC_Hours,tab[i].time_end.RTC_Minutes,tab[i].time_end.RTC_Seconds,tab[i].time_end.RTC_Date,tab[i].time_end.RTC_Month,tab[i].time_end.RTC_Year+2000);
+   }
+
+}
+
+
+void CMD_GetTotalInfo(void)
+{
+	printf("\n");
+
+ 	total_info_struct tws;
+	unsigned int *p = (unsigned int*) &tws;
+	
+	if(!UdpInitial()) return;
+
+ 	SendMessage(GET_TOTAL_INFO,NULL,0);
+	
+	
+	if(RecvMessage(GET_TOTAL_INFO+100,&tws,sizeof(total_info_struct)) == 0)
 	{
-	   case GET_SYS_INFO_0 + 100:
-		   {
-               #define MAX_CHANNEL 16
-			   
-			   struct info
-			   {
-                   unsigned short L151_gain[MAX_CHANNEL];
-                   unsigned int   L151_mode;
-                   unsigned int   L151_initial_error;
-                   unsigned int   L151_stream_error;
-			   } *pinfo;
-
-			   pinfo = (info*) &rx_tcp_msg.data[0];
- 
-			   printf("\n L151_initial_error  [ %d ] \n",pinfo->L151_initial_error);
-	           printf("\r L151_mode  [ %d ] \n",pinfo->L151_mode);
-	           printf("\r L151_stream_error  [ %d ] \n",pinfo->L151_stream_error);
-     	       
-			   for(int i = 0; i < MAX_CHANNEL; i++) 
-			   {
-				  printf("\r channel %02d gain 0x%x \n",i,pinfo->L151_gain[i]);
-			   }
-		   }
-
-       break;
-
-	   case GET_SYS_INFO_1 + 100:
-		   {
-
-			   struct info
-			   {
-				   unsigned int unit_index;
-                   unsigned int unit_mode;
-                   unsigned int super_block_real_read;
-                   unsigned int super_block_real_write;
-                   time_struct  time_begin;
-                   time_struct  time_end;
-				   unsigned int super_block_addres;
-				   unsigned int err_crc[3];
-
-			   } *pinfo;
-
-			   pinfo = (info*) &rx_tcp_msg.data[0];
-               
-			   #define MODE_STREAM  11
-
-				
-				   
-
-		       printf("\n time begin %dh : %dm : %ds   %d-%d-%d \n",pinfo->time_begin.RTC_Hours,pinfo->time_begin.RTC_Minutes,pinfo->time_begin.RTC_Seconds,pinfo->time_begin.RTC_Date,pinfo->time_begin.RTC_Month,pinfo->time_begin.RTC_Year+2000);
-			   printf("\r time end   %dh : %dm : %ds   %d-%d-%d \n",pinfo->time_end.RTC_Hours,pinfo->time_end.RTC_Minutes,pinfo->time_end.RTC_Seconds,pinfo->time_end.RTC_Date,pinfo->time_end.RTC_Month,pinfo->time_end.RTC_Year+2000);
-
-			   printf("\n");
-			   printf("\r unit MT29F4               %d   \n",pinfo->unit_index);
-			   printf("\r mode MT29F4               %d   \n",pinfo->unit_mode);
-	           printf("\r super_block_real_read     %d   \n",pinfo->super_block_real_read);
-	           printf("\r super_block_real_write    %d   \n",pinfo->super_block_real_write);
-	           printf("\r super_block_addres        %d   \n",pinfo->super_block_addres);
-               printf("\r err_crc_binar             %d   \n",pinfo->err_crc[0]);
-               printf("\r err_crc_write_nand        %d   \n",pinfo->err_crc[1]);
-               printf("\r err_crc_read_nand         %d   \n",pinfo->err_crc[2]);
+		printf("\n GetTotalInfo Failure \n ");
+		return;
+	}
 
 
+	for(int i = 0; i < 21; i++)
+	{
+		
+		
+		if(*(p+i) == 0)
+		{
+			printf("\n OK  ");
+		}
+		else
+		{
+			printf("\n FAIL");
+		}
 
-			   printf("\n");
-
-		   }
-
-       break;
-
-
-	   case GET_SYS_INFO_2 + 100:
-		   {
-			   struct tab
-			   {   unsigned int unit_index;
-				   unsigned int reserved;
-				   unsigned int sbrw;
-				   unsigned int index[2];
-				   time_struct  time_begin;
-                   time_struct  time_end;
-
-			   } tab[2];
-			   
-			   
-			   memcpy(tab,&rx_tcp_msg.data[0],sizeof(tab));
-
-
-			   for(int i = 0; i < 2; i++)
-			   {
- 			       printf("\n unit_index  %d \n",i);
-
-				   printf("\r total files write  %d   \n",tab[i].sbrw);
-
-		      	   printf("\r begin files num    %d   \n",tab[i].index[0]);
-		    	   printf("\r end files num      %d   \n",tab[i].index[1]);
-
-	               printf("\r time begin %dh : %dm : %ds   %d-%d-%d \n",tab[i].time_begin.RTC_Hours,tab[i].time_begin.RTC_Minutes,tab[i].time_begin.RTC_Seconds,tab[i].time_begin.RTC_Date,tab[i].time_begin.RTC_Month,tab[i].time_begin.RTC_Year+2000);
-			       printf("\r time end   %dh : %dm : %ds   %d-%d-%d \n",tab[i].time_end.RTC_Hours,tab[i].time_end.RTC_Minutes,tab[i].time_end.RTC_Seconds,tab[i].time_end.RTC_Date,tab[i].time_end.RTC_Month,tab[i].time_end.RTC_Year+2000);
-
-			   }
-		   }
-	   break;
-
-
-
-	   default:  printf("\r Failure msg_id (%d) \n",rx_tcp_msg.msg_id);
-
-	   break;
+		printf(error_buffer[i]);
 
 	}
+
+	printf("\n");
+	printf("\n nand_work_counter = nand_0 = %d  nand_1 = %d",tws.nand_work_counter[0],tws.nand_work_counter[1]);
+
+	unsigned int total_hour =  tws.total_time[0] / 3600;
+	unsigned int total_min  = (tws.total_time[0] / 60) - (total_hour * 60);
+
+    printf("\n total time work = %d (hour) %d (min)",total_hour,total_min);
+
+
+	Sleep(0);
 }
 
 
@@ -931,6 +972,8 @@ int TimeDetect(time_struct t0, time_struct t1)
 	return 0;
 }
 
+/*
+
 void CMD_GetAll(void)
 {
 	static int i = 0;
@@ -974,12 +1017,12 @@ void CMD_GetAll(void)
 	if((ts[0].sbrw > 0) && (ts[1].sbrw == 0)) // Читаю только Nand-0
 	{
 		recive_index = 0;
-	    CMD_GetSuperBlock(ts[0].file_index[0],ts[0].file_index[1]);
+//	    CMD_GetSuperBlock(ts[0].file_index[0],ts[0].file_index[1]);
 	}
 	else if((ts[1].sbrw > 0) && (ts[0].sbrw == 0)) // Читаю только Nand-1
 	{
 		recive_index = 1;
-	    CMD_GetSuperBlock(ts[1].file_index[0],ts[1].file_index[1]);
+//	    CMD_GetSuperBlock(ts[1].file_index[0],ts[1].file_index[1]);
 	}
 	else 
 	{
@@ -991,13 +1034,13 @@ void CMD_GetAll(void)
     		if(ts[0].sbrw > 0)
 			{
 				recive_index = 0;
-	            CMD_GetSuperBlock(ts[0].file_index[0],ts[0].file_index[1]);
+//	            CMD_GetSuperBlock(ts[0].file_index[0],ts[0].file_index[1]);
 			}
 	
 			if(ts[1].sbrw > 0)
 			{
 				recive_index = 1;
-	            CMD_GetSuperBlock(ts[1].file_index[0],ts[1].file_index[1]);
+//	            CMD_GetSuperBlock(ts[1].file_index[0],ts[1].file_index[1]);
 			}
 
 		}
@@ -1009,13 +1052,13 @@ void CMD_GetAll(void)
 	    	if(ts[1].sbrw > 0)
 			{
 				recive_index = 1;
-	            CMD_GetSuperBlock(ts[1].file_index[0],ts[1].file_index[1]);
+//	            CMD_GetSuperBlock(ts[1].file_index[0],ts[1].file_index[1]);
 			}
 	
     		if(ts[0].sbrw > 0)
 			{
 				recive_index = 0;
-	            CMD_GetSuperBlock(ts[0].file_index[0],ts[0].file_index[1]);
+//	            CMD_GetSuperBlock(ts[0].file_index[0],ts[0].file_index[1]);
 			}
 		}
 	}
@@ -1026,6 +1069,7 @@ void CMD_GetAll(void)
 	fclose(pf);
 }
 	
+*/
 
 int CMD_fOpen(void)
 {
@@ -1084,11 +1128,6 @@ void CMD_GetSuperBlock(int f_id1, int f_id2)
 	} sbh;
     #pragma pack(pop) 
 
-	//if(!UdpInitial()) 
-	//{
-	//	return;
-	//}
-    
 	if(f_id1 > f_id2) 
 	{
 		printf("\r Failure set address \n");
@@ -1101,7 +1140,8 @@ void CMD_GetSuperBlock(int f_id1, int f_id2)
 	{
 		get_sb_header_msg[0] = recive_index;
 		get_sb_header_msg[1] = f_id1;
-		
+
+					
 		if(SendRecvMessage(GET_SB_HEADER,&get_sb_header_msg,8,GET_SB_HEADER+100,&sbh,sizeof(sbh),3))
 		{
 			if(sbh.status == SB_OK)
@@ -1131,7 +1171,7 @@ void CMD_GetSuperBlock(int f_id1, int f_id2)
 
  
 		while(page_adr <= sbh.page_real_write)
-		{
+		{			
 			if(time_out-- == 0) 
 			{
 				SendMessage(GET_PAGE,&page_adr,4);
@@ -1167,7 +1207,8 @@ void CMD_GetSuperBlock(int f_id1, int f_id2)
 					 if(crc32(adpcm_block,ADPCM_BLOCK_SIZE-4,ADPCM_BLOCK_SIZE) == *padpcm_crc)
 					 {
 					    file.Write(adpcm_block,ADPCM_BLOCK_SIZE);
-					    PrintFileScrool(f_id1-1,page_adr++,sbh.page_real_write); 
+					    PrintFileScrool(f_id1-1,page_adr++,sbh.page_real_write);
+			
 					 }
 					 else
 					 {
@@ -1243,7 +1284,7 @@ void CMD_SetTime(void)
 
 }
 
-void CMD_SetMapBB(void)
+void CMD_FormatMapBB(void)
 {
 	int status = 0;
 
@@ -1252,9 +1293,9 @@ void CMD_SetMapBB(void)
 
 	for(int i = 0; i < 3; i++)
 	{
-		SendMessage(SET_MAP_BB,NULL,0);
+		SendMessage(FORMAT_MAP_BB,NULL,0);
 		
-		if(status = RecvMessage(SET_MAP_BB+100,NULL,0)) 
+		if(status = RecvMessage(FORMAT_MAP_BB+100,NULL,0)) 
 		{
 			printf("\r format map_bb DONE\n");
 			break;
@@ -1267,40 +1308,39 @@ void CMD_SetMapBB(void)
 	}
 }
 
+
+void CMD_FormatTWS(void)
+{
+	int status = 0;
+
+ 	if(!UdpInitial()) return;
+
+
+	for(int i = 0; i < 3; i++)
+	{
+		SendMessage(FORMAT_TWS,NULL,0);
+		
+		if(status = RecvMessage(FORMAT_TWS+100,NULL,0)) 
+		{
+			printf("\r format tws DONE\n");
+			break;
+		}
+	}
+
+	if(!status)
+	{
+		printf("\r format tws FAILURE \n");
+	}
+}
+
+/*
 int CMD_GetBmark(int param)
 {
-//	if(!UdpInitial()) return 0;
-
-	param &= 0xf;
-
-	if(SendRecvMessage(GET_BM,&param,1,GET_BM+100,&ts,sizeof(ts),3))
-//	if(SendRecvMessage(GET_SYS_INFO_2,NULL,0,GET_SYS_INFO_2+100,&ts,sizeof(ts),3))
-	{
-		printf("\n current unit_index  %d   \n",ts[0].unit_index);
-	
-	    for(int i = 0; i < 2; i++)
-		{
-			printf("\n unit_index  %d   \n",i);
- 		    printf("\r total files write  %d   \n",ts[i].sbrw);
-      	    printf("\r begin files num    %d   \n",ts[i].file_index[0]);
-    	    printf("\r end files num      %d   \n",ts[i].file_index[1]);
-            printf("\r time begin %dh : %dm : %ds   %d-%d-%d \n",ts[i].time_begin.RTC_Hours,ts[i].time_begin.RTC_Minutes,ts[i].time_begin.RTC_Seconds,ts[i].time_begin.RTC_Date,ts[i].time_begin.RTC_Month,ts[i].time_begin.RTC_Year+2000);
-  	        printf("\r time end   %dh : %dm : %ds   %d-%d-%d \n",ts[i].time_end.RTC_Hours,ts[i].time_end.RTC_Minutes,ts[i].time_end.RTC_Seconds,ts[i].time_end.RTC_Date,ts[i].time_end.RTC_Month,ts[i].time_end.RTC_Year+2000);
-		}
-		
-	    return 1;
-
-	
-	}
-	else
-	{
-		printf("\n get bookmark FAILURE \n");
-	}
 
 
 	return 0;
 }
-
+*/
 
 void CMD_GetTime(void)
 {
@@ -1319,6 +1359,7 @@ void CMD_GetTime(void)
 
 }
 
+/*
 int CMD_SetFixed(unsigned char* pfixed_index)
 {
 	static unsigned char fixed_index = 1;
@@ -1357,6 +1398,7 @@ int CMD_GetFixed(unsigned char *pfixed_index)
 	return 0;
 }
 
+
 int CMD_SetCloseFileIndex(void)
 {
 
@@ -1387,7 +1429,7 @@ int CMD_GetCloseFileIndex(unsigned char *pindex)
 
 	return 0;
 }
-
+*/
 
 void CMD_Start(void)
 {

@@ -2,6 +2,7 @@
 #include "ethernet.h"
 #include "at24c512.h"
 #include "i2c_f415.h"
+#include "spi_L151.h"
 #include "nand_hw_driver.h"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -16,7 +17,7 @@ adpcm_message_struct    adpcm_msg[2];
 adpcm_page_ctrl_struct  adpcm_ctrl[MAX_CHANNEL];
 uint8_t                 adpcm_ready = 0;
 adpcm_page_struct       *padpcm[2][MAX_CHANNEL];
-initial_info_struct     info_ini;
+total_info_struct        t_info;
 
 bad_block_map_struct*   pmap_bb;
 super_block_struct*     prsb;
@@ -24,7 +25,11 @@ super_block_struct*     pwsb;
 alarm_struct            alarm_data;
 ethernet_initial_struct eth_ini_dat;
 tab_struct              tab;
+total_work_struct       tws;
 
+uint64_t total_timer = 0;
+
+uint8_t  server_control[2][MAX_FILE];
 uint16_t spi_dma_buffer[2][SPI_RX_DMA];
 uint32_t rx_udp_msg_size;
 uint32_t tx_udp_msg_size;
@@ -35,90 +40,12 @@ int msg_32bit_size;
 int get_page;
 int rew_status = 0;
 
-
 __IO uint32_t LocalTime;
-
-
-void TIM77_Config(uint32_t period)
-{  
-  NVIC_DisableIRQ(TIM7_IRQn);  
-  TIM_ITConfig(TIM7,TIM7_IRQn, DISABLE);
-  
-   
-  TIM_Cmd(TIM7, DISABLE);
-  TIM_TimeBaseInitTypeDef    TIM_TimeBaseStructure;
-  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM7, ENABLE);
-  TIM_TimeBaseStructInit(&TIM_TimeBaseStructure);
-  TIM_TimeBaseStructure.TIM_Period = period*2;
-  TIM_TimeBaseStructure.TIM_Prescaler =   30-1; // 1 mks
-  TIM_TimeBaseStructure.TIM_ClockDivision = 0;
-  TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
-  TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;//period*2-1;
-  TIM_TimeBaseInit(TIM7, &TIM_TimeBaseStructure);
-  TIM_SelectOutputTrigger(TIM7, TIM_TRGOSource_Update);
-  TIM_ITConfig(TIM7,TIM7_IRQn, ENABLE);  
-  NVIC_EnableIRQ(TIM7_IRQn);  
-  TIM_Cmd(TIM7, ENABLE);
-}
-
- 
-DMA_InitTypeDef            DMA_InitStructure;
-
-#define DMA_Stream DMA2_Stream6
-#define SIZE 10
-
-void main()
-{
-  LED_Config();
-  SRAM_Config();
- 
-  uint16_t *pmem1 = (uint16_t*)sram_bank3;  
-  uint16_t *pmem2 = (uint16_t*)(sram_bank3 + 0x20);  
-
-  for(int i = 0; i < SIZE; i++)
-  {
-    *(pmem1++) = 0;
-    *(pmem2++) = i;
-    
-  }
-
-
-  
-  DMA_DeInit (DMA_Stream);
-  
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_DMA2, ENABLE); 
-  DMA_InitStructure.DMA_Channel = DMA_Channel_0;   
-  DMA_InitStructure.DMA_PeripheralBaseAddr = sram_bank3+0x20;
-  DMA_InitStructure.DMA_Memory0BaseAddr = sram_bank3;
-  DMA_InitStructure.DMA_DIR = DMA_DIR_MemoryToMemory;
-  DMA_InitStructure.DMA_BufferSize = SIZE; 
-  DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Enable;
-  DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
-  DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;
-  DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_HalfWord;
-  DMA_InitStructure.DMA_Mode = DMA_FIFOMode_Disable;
-  DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_HalfFull;
-  DMA_InitStructure.DMA_Priority = DMA_Priority_High;
-  DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable; 
-  DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
-  DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
-  DMA_Init(DMA_Stream,&DMA_InitStructure);  
- 
- // DMA_SetCurrDataCounter(DMA_Stream,100);
-  DMA_Cmd(DMA_Stream, ENABLE);
-  
-  
-  while(1)
-  {
-     GPIO_ToggleBits(GPIOI, GPIO_Pin_1);
-  }
-  
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 // MAIN * MAIN * MAIN * MAIN * MAIN * MAIN * MAIN * MAIN * MAIN * MAIN * MAIN * 
 ////////////////////////////////////////////////////////////////////////////////
-void main_old()
+void main()
 {
     
   msg_8bit_size  = sizeof(adpcm_msg)  / 2;
@@ -129,32 +56,34 @@ void main_old()
   tx_udp_msg_size   = sizeof(tx_udp_msg)  / MAX_UDP_SOCK;
     
   SysTim_Config();
+      
+  CRC_Config();
+  
+  RTC_Config();
+  
+  Data_Config();
+    
+  delay(200);
+    
+  f415_SPI_Config();
   
   I2C1_Config();
   
+  f415_Config();
+
   ETH_Config();
-     
-  RTC_Config();
-  
-  CRC_Config();
-    
+   
   LED_Config();
  
-  SRAM_Config();
-  
-  info_ini.IS61_error = SRAM_Test();
-  
-  f415_SPI_Config();
-  
-  f415_I2C_Config();
-  
+  SRAM_Test();
+    
   SuperBlock_Config();
    
   NAND_Config();
     
   for(int i = 0; i < MAX_ERROR; i++) 
   {
-    if(*(((uint32_t*)&info_ini)+i) == 1)
+    if(*(((uint32_t*)&t_info)+i) == 1)
     {
        GPIO_WriteBit(GPIOI, GPIO_Pin_1,Bit_RESET);
     }
@@ -172,9 +101,9 @@ void main_old()
       
    LwIP_Periodic_Handle(LocalTime);
    
-   nand_erase_handler();     
-   
    nand_sb_write_handler();
+      
+   nand_erase_handler(); 
       
    if(rew_status != 0) ReSendUdpData();
    else nand_sb_read_handler();
@@ -192,9 +121,16 @@ void SysTickTimer_Config(void)
   SysTick_Config(RCC_Clocks.HCLK_Frequency / 100);  
 }
 
-
 void SysTick_Handler(void)
 {
+  static int timer = 0;
+  
+  if(timer++ == 99)
+  {
+    timer = 0;
+    total_timer++;  
+  }
+  
   LocalTime += SYSTEMTICK_PERIOD_MS;
 }
 

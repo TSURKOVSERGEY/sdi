@@ -1,24 +1,31 @@
-#include "stm32l1xx_conf.h"
 #include "main.h"
 
-#define GPIO_PIN_PORTA    GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7
-#define GPIO_PIN_PORTB    GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_12 
+
+#define GPIO_PIN_PORTA    GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7
+#define GPIO_PIN_PORTB    GPIO_Pin_0 | GPIO_Pin_1 
 #define GPIO_PIN_PORTC    GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5   
 
-extern uint32_t raw_buffer[DMA_RX_SIZE];
+extern uint16_t raw_buffer[DMA_ADC_SIZE];
+
+void SysTim_Config(void)
+{
+  RCC_ClocksTypeDef RCC_Clocks;
+  RCC_GetClocksFreq(&RCC_Clocks);
+  SysTick_Config(RCC_Clocks.HCLK_Frequency / 100);
+}
+
 
 void TIM2_Config(void)
 {
   TIM_TimeBaseInitTypeDef    TIM_TimeBaseStructure;
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
   TIM_TimeBaseStructInit(&TIM_TimeBaseStructure);
-  TIM_TimeBaseStructure.TIM_Period = 16384000 / 8000;
+  TIM_TimeBaseStructure.TIM_Period = 32000000 / 8000; 
   TIM_TimeBaseStructure.TIM_Prescaler = 0;
   TIM_TimeBaseStructure.TIM_ClockDivision = 0;
   TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
   TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
-  //TIM_SelectOutputTrigger(TIM2, TIM_TRGOSource_Update); !!!!!!!
-  
+  TIM_SelectOutputTrigger(TIM2, TIM_TRGOSource_Update);  
 }
 
 void TIM2_Enable(void)
@@ -35,12 +42,11 @@ void TIM2_Disable(void)
   TIM_Cmd(TIM2,DISABLE);
 }
 
-
-
 void CRC_Config(void)
 {
   RCC_AHBPeriphClockCmd(RCC_AHBPeriph_CRC, ENABLE);
 }
+
 
 void ADC_DMA_Config(void)
 {
@@ -118,5 +124,3 @@ void ADC_DMA_Config(void)
   ADC_SoftwareStartConv(ADC1);
 
 }
-
-

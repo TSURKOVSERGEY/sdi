@@ -201,7 +201,7 @@ static void FSMC_Init(void)
   p.FSMC_CLKDivision = 0;
   p.FSMC_DataLatency = 0;
   p.FSMC_AccessMode = FSMC_AccessMode_A;
-
+  
   FSMC_NORSRAMInitStructure.FSMC_Bank = FSMC_Bank1_NORSRAM1;
   FSMC_NORSRAMInitStructure.FSMC_DataAddressMux = FSMC_DataAddressMux_Disable;
   FSMC_NORSRAMInitStructure.FSMC_MemoryType = FSMC_MemoryType_PSRAM;
@@ -256,10 +256,18 @@ static void FSMC_Init(void)
 	
 // ----------------------------------------------
 	
-  p.FSMC_AddressSetupTime = 0;
-  p.FSMC_AddressHoldTime = 0;
-  p.FSMC_DataSetupTime = 3;
-  p.FSMC_BusTurnAroundDuration = 1;
+//  p.FSMC_AddressSetupTime = 2;//0;
+//  p.FSMC_AddressHoldTime = 0;
+//  p.FSMC_DataSetupTime = 6;//3;
+//  p.FSMC_BusTurnAroundDuration = 2;//1;
+//  p.FSMC_CLKDivision = 0;
+//  p.FSMC_DataLatency = 0;
+//  p.FSMC_AccessMode = FSMC_AccessMode_A;
+  
+  p.FSMC_AddressSetupTime = 6;
+  p.FSMC_AddressHoldTime = 6;
+  p.FSMC_DataSetupTime = 10;
+  p.FSMC_BusTurnAroundDuration = 2;
   p.FSMC_CLKDivision = 0;
   p.FSMC_DataLatency = 0;
   p.FSMC_AccessMode = FSMC_AccessMode_A;

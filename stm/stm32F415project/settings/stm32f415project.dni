@@ -1,5 +1,5 @@
 [DebugChecksum]
-Checksum=2073463971
+Checksum=-1545843705
 [Stack]
 FillEnabled=0
 OverflowWarningsEnabled=1
@@ -54,6 +54,26 @@ Fmt1={W}0:flag1	4	0
 Fmt2={W}0:flag2	4	0
 Fmt3={W}0:lastevent	4	0
 Fmt4={W}0:status	4	0
+[CallStackLog]
+Enabled=0
+[DriverProfiling]
+Enabled=0
+Mode=3
+Graph=0
+Symbiont=0
+Exclusions=
+[Trace2]
+Enabled=0
+ShowSource=0
+[SWOTraceWindow]
+PcSampling=0
+InterruptLogs=0
+ForcedTimeStamps=0
+EventCPI=0
+EventEXC=0
+EventFOLD=0
+EventLSU=0
+EventSLEEP=0
 [DataLog]
 LogEnabled=0
 SumEnabled=0
@@ -74,25 +94,6 @@ Category=_ 0
 [TermIOLog]
 LoggingEnabled=_ 0
 LogFile=_ ""
-[Trace2]
-Enabled=0
-[SWOTraceWindow]
-PcSampling=0
-InterruptLogs=0
-ForcedTimeStamps=0
-EventCPI=0
-EventEXC=0
-EventFOLD=0
-EventLSU=0
-EventSLEEP=0
-[CallStackLog]
-Enabled=0
-[DriverProfiling]
-Enabled=0
-Mode=3
-Graph=0
-Symbiont=0
-Exclusions=
 [Disassemble mode]
 mode=0
 [Breakpoints2]

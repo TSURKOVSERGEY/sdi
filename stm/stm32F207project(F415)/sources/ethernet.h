@@ -12,7 +12,7 @@
 #define IP_ADDR0        192
 #define IP_ADDR1        9
 #define IP_ADDR2        206
-#define IP_ADDR3        200
+#define IP_ADDR3        204
 
 #define NETMASK_ADDR0   255
 #define NETMASK_ADDR1   255
@@ -28,9 +28,9 @@
 #define ADR0_TX0_UDP    192
 #define ADR1_TX0_UDP    9
 #define ADR2_TX0_UDP    206
-#define ADR3_TX0_UDP    124
+#define ADR3_TX0_UDP    251 //124
 #define PORT_RX0_UDP    30000
-#define PORT_TX0_UDP    30001
+#define PORT_TX0_UDP    30000 //30001
 
 ////////////////////////////// PTUK ////////////////////////////////////////////
 #define ADR0_TX1_UDP    192
@@ -50,7 +50,6 @@
 
 
 void UDP_Config(void);
-
 void SendMessage(int id,unsigned int msg_id, void* data, unsigned int len);
 void SendMessageExt(int id, unsigned int msg_id, void* data, unsigned int len);
 void ReSendUdpData(void);

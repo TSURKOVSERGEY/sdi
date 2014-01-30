@@ -12,7 +12,7 @@ ByteLimit=50
 StopOnUncaught=_ 0
 StopOnThrow=_ 0
 [DebugChecksum]
-Checksum=-1365850183
+Checksum=-1132714169
 [CallStack]
 ShowArgs=0
 [Disassembly]
@@ -51,27 +51,31 @@ Fmt0=DMA_InitTypeDef-DMA_Memory0BaseAddr	4	0
 Fmt1=DMA_InitTypeDef-DMA_PeripheralBaseAddr	4	0
 Fmt2=struct ip_addr-addr	4	0
 Fmt3=super_block_struct-id	4	0
-Fmt4=super_block_struct-time_open	4	0
+Fmt4=super_block_struct-time_close	4	0
+Fmt5=super_block_struct-time_open	4	0
+Fmt6=udp_message_struct-msg_crc	4	0
 [array_types]
 Fmt0=int8_t[112]	3	0
 Fmt1=struct <Unnamed 24> *[16]	3	0
 Fmt2=uint16_t[1000]	4	0
-Fmt3=uint16_t[100]	4	0
+Fmt3=uint16_t[100]	3	0
 Fmt4=uint16_t[1024]	4	0
 Fmt5=uint16_t[1056]	4	0
 Fmt6=uint16_t[2048]	3	0
 Fmt7=uint16_t[330]	4	0
 Fmt8=uint16_t[512]	3	0
-Fmt9=uint64_t[2]	4	0
+Fmt9=uint64_t[2]	3	0
 Fmt10=uint8_t[1026]	4	0
 Fmt11=uint8_t[16]	4	0
-Fmt12=uint8_t[2048]	4	0
-Fmt13=uint8_t[256]	3	0
-Fmt14=uint8_t[4]	3	0
-Fmt15=uint8_t[64]	3	0
-Fmt16=unsigned char[320]	4	0
-Fmt17=unsigned short[100]	4	0
-Fmt18=unsigned short[2048]	4	0
+Fmt12=uint8_t[200]	3	0
+Fmt13=uint8_t[2048]	3	0
+Fmt14=uint8_t[256]	3	0
+Fmt15=uint8_t[2]	3	0
+Fmt16=uint8_t[4]	3	0
+Fmt17=uint8_t[64]	3	0
+Fmt18=unsigned char[320]	4	0
+Fmt19=unsigned short[100]	4	0
+Fmt20=unsigned short[2048]	4	0
 [watch_formats]
 Fmt0={W}0:*(pdata-1)	3	0
 Fmt1={W}0:*(pdata-2)	3	0
@@ -115,14 +119,6 @@ GraphEnabled=0
 ShowTimeLog=1
 ShowTimeSum=1
 SumSortOrder=0
-[Disassemble mode]
-mode=0
-[Breakpoints2]
-Bp0=_ 0 "EMUL_CODE" "{$PROJ_DIR$\sources\lwip-ttcp.c}.528.3" 0 0 1 "" 0 "" 0
-Bp1=_ 1 "EMUL_CODE" "{$PROJ_DIR$\sources\main.c}.113.6" 0 0 1 "" 0 "" 0
-Bp2=_ 1 "EMUL_CODE" "{$PROJ_DIR$\sources\main.c}.198.3" 0 0 1 "" 0 "" 0
-Bp3=_ 1 "EMUL_CODE" "{$PROJ_DIR$\sources\main.c}.87.3" 0 0 1 "" 0 "" 0
-Count=4
 [Log file]
 LoggingEnabled=_ 0
 LogFile=_ ""
@@ -130,6 +126,20 @@ Category=_ 0
 [TermIOLog]
 LoggingEnabled=_ 0
 LogFile=_ ""
+[CallStackLog]
+Enabled=0
+[DriverProfiling]
+Enabled=0
+Mode=3
+Graph=0
+Symbiont=0
+Exclusions=
+[Disassemble mode]
+mode=0
+[Breakpoints2]
+Bp0=_ 0 "EMUL_CODE" "{$PROJ_DIR$\sources\lwip-ttcp.c}.528.3" 0 0 1 "" 0 "" 0
+Bp1=_ 1 "EMUL_CODE" "{$PROJ_DIR$\sources\nand_sb_write_driver.c}.343.3" 0 0 1 "" 0 "" 0
+Count=2
 [Aliases]
 A0=_ "D:\MyWork\Система документирования\stm_project\stm32F107-31_01_2013\ETH\stm32f2x7_eth.c" ""
 A1=_ "D:\MyWork\Система документирования\stm_project\stm32F107-31_01_2013\STM32F2xx_StdPeriph_Driver\src\stm32f2xx_crc.c" ""
@@ -141,11 +151,3 @@ A6=_ "D:\NET\work\Система документирования\stm_project\stm32F207project(f415)\so
 A7=_ "D:\WORK\Система документирования\stm_project\stm32F207project(f415)\STM32F2xx_StdPeriph_Driver\src\stm32f2xx_gpio.c" ""
 Count=8
 SuppressDialog=1
-[CallStackLog]
-Enabled=0
-[DriverProfiling]
-Enabled=0
-Mode=3
-Graph=0
-Symbiont=0
-Exclusions=

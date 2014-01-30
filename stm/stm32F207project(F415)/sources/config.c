@@ -1,7 +1,62 @@
 #include "main.h"
 #include "spi_f415.h"
+#include "nand_hw_driver.h"
 
-extern initial_info_struct  info_ini;
+extern total_info_struct      t_info;
+extern alarm_struct           alarm_data;
+extern bad_block_map_struct*  pmap_bb;
+extern total_work_struct      tws;
+extern adpcm_page_ctrl_struct adpcm_ctrl[MAX_CHANNEL];
+
+void Data_Config(void)
+{
+  
+  memset(adpcm_ctrl,0,sizeof(adpcm_ctrl));
+  memset(&alarm_data,0,sizeof(alarm_data));
+    
+  alarm_data.PageAdressErase     = BEGIN_PAGE & 0xffffffc0;   
+  alarm_data.PageAdressWrite     = BEGIN_PAGE & 0xffffffc0;   
+  alarm_data.super_block_begin   = BEGIN_PAGE & 0xffffffc0;   
+  alarm_data.super_block_prev    = BEGIN_PAGE & 0xffffffc0;       
+  alarm_data.super_block_current = BEGIN_PAGE & 0xffffffc0;   
+  
+  
+  t_info.f207_mode = F207_IDLE_MODE;
+  t_info.f415_mode = F415_IDLE_MODE;
+  
+  t_info.f415_spi1_error = 1;
+    
+  LoadTwsStruct();
+ 
+}
+
+void LoadTwsStruct(void)
+{
+  for(int i = 0; i < 2; i++)
+  { 
+    t_info.read_total_time_error[i] = 0;
+      
+    nand_16bit_read_page_ext(i,(uint16_t*)&tws,TWS_ADDRES * 64,sizeof(total_work_struct)); 
+
+    if(tws.crc != crc32((uint8_t*)&tws,sizeof(total_work_struct)-4,sizeof(total_work_struct))) 
+    {
+       t_info.read_total_time_error[i] = 1;
+      
+       if(i == 1)
+       {
+         if(t_info.read_total_time_error[0] == 0)
+         {
+           nand_16bit_read_page_ext(0,(uint16_t*)&tws,TWS_ADDRES * 64,sizeof(total_work_struct)); 
+         }
+         else
+         {
+           return;
+         }
+       }
+    }  
+  }
+}
+
 
 void SysTim_Config(void)
 {
@@ -24,7 +79,7 @@ void RTC_Config(void)
   
   while(RCC_GetFlagStatus(RCC_FLAG_LSERDY) == RESET) 
   { if((Timeout--) == 0) 
-    { info_ini.rtc_error = 1;
+    { t_info.rtc_error = 1;
       return;
     }
   }
@@ -176,8 +231,8 @@ uint32_t f415_SPI_Config(void)
   //SPI_TxDma_Config();
   SPI_RxDma_Config(ENABLE);
   
- return 0;
+  return 0;
 }
- 
+
 
 

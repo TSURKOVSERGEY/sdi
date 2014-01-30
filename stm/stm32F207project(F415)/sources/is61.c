@@ -1,15 +1,16 @@
  #include "main.h"
 
-uint32_t SRAM_Test(void)
+extern total_info_struct  t_info;
+
+void SRAM_Test(void)
 {
   uint32_t  adr   = 0;
   uint32_t  error = 0;
-  uint16_t *prnd;
+  uint16_t  rnd[512];
+  uint16_t *prnd = rnd;
   uint16_t *pmem;
   uint16_t  temp;
   
-  prnd = malloc(512); 
- 
   RCC_AHB2PeriphClockCmd(RCC_AHB2Periph_RNG, ENABLE);
   RNG_Cmd(ENABLE);
   
@@ -48,7 +49,6 @@ uint32_t SRAM_Test(void)
       if(temp != *(pmem++)) error++;
     }
   }
-  
-  free(prnd); 
-  return error;
+      
+  if(error > 0) t_info.IS61_error = 1;
 }

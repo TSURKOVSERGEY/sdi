@@ -4,13 +4,12 @@
 #include "string.h"
 #include "main.h"
 
+
 #define DMA_Stream_IT_MASK     (uint32_t)(((DMA_LISR_FEIF0 | DMA_LISR_DMEIF0 | \
                                            DMA_LISR_TEIF0 | DMA_LISR_HTIF0 | \
                                            DMA_LISR_TCIF0) << 22) | (uint32_t)0x20000000)
 
 extern uint16_t spi_dma_buffer[2][SPI_RX_DMA];
-
-byte_stuffing_message_struct bs_tx_msg;
 
 void SPI_Config(void)
 {
@@ -97,31 +96,6 @@ void SPI_RxDma_Config(FunctionalState mode)
 }
 
 
-
-void SendL151Message(uint16_t *pbuffer, int size)
-{  
-  bs_tx_msg.msg_len = 0;
-  
-  bs_tx_msg.data[bs_tx_msg.msg_len++] = DLE;
-  bs_tx_msg.data[bs_tx_msg.msg_len++] = STX;
- 
-  while(size-- >0)
-  {
-    bs_tx_msg.data[bs_tx_msg.msg_len++] = *(pbuffer++);  
-    if(*(pbuffer-1) == DLE) bs_tx_msg.data[bs_tx_msg.msg_len++] = DLE;
-  } 
- 
-  bs_tx_msg.data[bs_tx_msg.msg_len++] = DLE;
-  bs_tx_msg.data[bs_tx_msg.msg_len++] = ETX;
-  bs_tx_msg.data[bs_tx_msg.msg_len++] = 0;
-  
-  DMA1->HIFCR = DMA_Stream_IT_MASK;
-  DMA1_Stream7->M0AR = (uint32_t)&bs_tx_msg;
-  DMA1_Stream7->NDTR = bs_tx_msg.msg_len;
-  DMA1_Stream7->CR |= (uint32_t)DMA_SxCR_EN;
-
-}
-
 void SPI_TxDma_Config(void)
 {
   DMA_InitTypeDef   DMA_InitStructure;
@@ -147,3 +121,4 @@ void SPI_TxDma_Config(void)
   DMA_Cmd(DMA1_Stream7, ENABLE);
   SPI_I2S_DMACmd(SPI3, SPI_I2S_DMAReq_Tx, ENABLE); 
 }
+

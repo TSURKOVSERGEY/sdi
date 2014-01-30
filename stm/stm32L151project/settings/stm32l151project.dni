@@ -1,5 +1,5 @@
 [DebugChecksum]
-Checksum=1204064454
+Checksum=-1978286599
 [Stack]
 FillEnabled=0
 OverflowWarningsEnabled=1
@@ -46,9 +46,6 @@ ITMportsEnable=1
 ITMportsTermIO=1
 ITMportsLogFile=0
 ITMlogFile=$PROJ_DIR$\ITM.log
-[struct_types]
-Fmt0=struct adpcm_message-msg_id	4	0
-Fmt1=struct spi_message-msg_crc	4	0
 [array_types]
 Fmt0=int16_t[16]	4	0
 Fmt1=int8_t[2]	4	0
@@ -69,6 +66,18 @@ Fmt8={W}0:pspi_msg	3	0
 Fmt9={W}0:spi_tx_buffer	0	2
 Fmt10={W}0:wrr	4	0
 Fmt11={W}0:wrw	3	0
+[Trace2]
+Enabled=0
+ShowSource=0
+[SWOTraceWindow]
+PcSampling=0
+InterruptLogs=0
+ForcedTimeStamps=0
+EventCPI=0
+EventEXC=0
+EventFOLD=0
+EventLSU=0
+EventSLEEP=0
 [DataLog]
 LogEnabled=0
 SumEnabled=0
@@ -89,17 +98,6 @@ Category=_ 0
 [TermIOLog]
 LoggingEnabled=_ 0
 LogFile=_ ""
-[Trace2]
-Enabled=0
-[SWOTraceWindow]
-PcSampling=0
-InterruptLogs=0
-ForcedTimeStamps=0
-EventCPI=0
-EventEXC=0
-EventFOLD=0
-EventLSU=0
-EventSLEEP=0
 [CallStackLog]
 Enabled=0
 [DriverProfiling]
@@ -111,7 +109,8 @@ Exclusions=
 [Disassemble mode]
 mode=0
 [Breakpoints2]
-Count=0
+Bp0=_ 1 "EMUL_CODE" "{$PROJ_DIR$\sources\i2c_f207.c}.142.3" 0 0 1 "" 0 "" 0
+Count=1
 [Aliases]
 A0=_ "D:\MyWork\Система документирования\stm_project\AudioUnit-2\sources\main.c" ""
 A1=_ "D:\NET\AudioUnit-2\STM32L1xx_StdPeriph_Driver\src\misc.c" ""

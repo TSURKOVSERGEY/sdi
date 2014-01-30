@@ -47,9 +47,10 @@ uint32_t I2C_Config(void)
   I2C_InitStructure.I2C_Ack = I2C_Ack_Enable;
   I2C_InitStructure.I2C_AcknowledgedAddress = I2C_AcknowledgedAddress_7bit;
   I2C_InitStructure.I2C_ClockSpeed = I2C_SPEED;
-
+ 
   I2C_Cmd(I2C2, ENABLE);
   I2C_Init(I2C2, &I2C_InitStructure);
+  I2C_AcknowledgeConfig(I2C1,ENABLE);
    
   NVIC_InitStructure.NVIC_IRQChannel =  I2C2_EV_IRQn; 
   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;

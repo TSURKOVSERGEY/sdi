@@ -1,7 +1,7 @@
 #include "main.h"
-
 #include "nand_hw_driver.h"
 
+extern alarm_struct  alarm_data;
 
 void NAND_Config(void)
 {
@@ -11,8 +11,9 @@ void NAND_Config(void)
   nand_ecc_enable(0);
   nand_ecc_enable(1);
   
-  nand_erase_super_block(0,0);
-  //nand_erase_super_block(1,0);
+  nand_erase_super_block(0,alarm_data.PageAdressErase);
+  //nand_erase_super_block(1,alarm_data.PageAdressErase);
+  //alarm_data.PageAdressErase += 64;
 
 }
 
@@ -142,6 +143,26 @@ void nand_16bit_write_page(uint32_t id, uint16_t *page_bufer,unsigned long int p
   nand_rdy(id);
 }
 
+void nand_16bit_write_page_ext(uint32_t id, uint16_t *page_bufer,unsigned long int page,int len)
+{
+  uint16_t i;
+    
+  nand_command_wr(id,0x8080);					 
+  nand_adr_wr(id,0x0000);
+  nand_adr_wr(id,0x0000);
+  nand_page_adr_wr(id,page);
+	
+  for (i=0;i<16;i++);
+  
+  for (i=0;i<len;i++) nand_data_wr(id,page_bufer[i]);
+
+  while(i++<2048) nand_data_wr(id,0x0);
+
+  nand_command_wr(id,0x1010);
+  
+  nand_rdy(id);
+}
+
 void nand_8bit_read_page_info(uint32_t id, uint8_t *page_bufer,unsigned long int page)
 {  
   uint16_t i;
@@ -213,11 +234,30 @@ void nand_16bit_read_page(uint32_t id, uint16_t *page_bufer,unsigned long int pa
   
 }
 
+void nand_16bit_read_page_ext(uint32_t id, uint16_t *page_bufer,unsigned long int page,int len)
+{
+  uint16_t i;
+  
+  nand_rdy(id);
+   
+  nand_command_wr(id,0x0000);					
+  nand_adr_wr(id,0x0000);
+  nand_adr_wr(id,0x0000);
+  nand_page_adr_wr(id,page);
+  nand_command_wr(id,0x3030);
+	
+  for (i=0;i<16;i++);
+	
+  nand_rdy(id);
+  
+  for (i=0;i<len;i++) page_bufer[i]=nand_data_rd(id);
+  
+}
+
 void nand_erase_block(uint32_t id, unsigned long int page)
 {
-    
   uint16_t i;
-    
+  
   nand_command_wr(id,0x6060);					 
   nand_page_adr_wr(id,page);
   nand_command_wr(id,0xD0D0);

@@ -2,168 +2,196 @@
 
 <project>
   <fileVersion>2</fileVersion>
-  <fileChecksum>963689891</fileChecksum>
+  <fileChecksum>2757498177</fileChecksum>
   <configuration>
     <name>Debug</name>
     <outputs>
-      <file>$PROJ_DIR$\sources\command_handler.c</file>
+      <file>$PROJ_DIR$\Debug\Obj\sync.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\stm32l1xx_spi.o</file>
+      <file>$TOOLKIT_DIR$\inc\c\ysizet.h</file>
+      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\inc\stm32l1xx_rtc.h</file>
+      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\inc\stm32l1xx_wwdg.h</file>
+      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\inc\stm32l1xx_comp.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\cmsis_iar.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\stm32l1xx_tim.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\config.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\spi_pga112.o</file>
+      <file>$TOOLKIT_DIR$\CMSIS\Include\core_cmFunc.h</file>
+      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\inc\stm32l1xx_lcd.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\stm32l1xx_rcc.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\stm32l1xx_adc.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\stm32l1xx_dma.pbi</file>
+      <file>$TOOLKIT_DIR$\CMSIS\Include\core_cm3.h</file>
       <file>$PROJ_DIR$\sources\main.c</file>
-      <file>$PROJ_DIR$\sources\main.h</file>
+      <file>$PROJ_DIR$\sources\spi_f207.c</file>
+      <file>$PROJ_DIR$\sources\spi_pga112.c</file>
       <file>$PROJ_DIR$\sources\config.c</file>
-      <file>$PROJ_DIR$\sources\spi_L151.c</file>
-      <file>$PROJ_DIR$\sources\spi_L151.h</file>
-      <file>$PROJ_DIR$\sources\spi_PGA112.c</file>
-      <file>$PROJ_DIR$\sources\spi_PGA112.h</file>
+      <file>$PROJ_DIR$\sources\i2c_f207.h</file>
+      <file>$PROJ_DIR$\sources\spi_f207.h</file>
+      <file>$PROJ_DIR$\sources\main.h</file>
+      <file>$PROJ_DIR$\sources\adpcm_coder.c</file>
+      <file>$PROJ_DIR$\sources\spi_pga112.h</file>
+      <file>$PROJ_DIR$\sources\i2c_f207.c</file>
+      <file>$PROJ_DIR$\sources\transmit_handler.c</file>
+      <file>$PROJ_DIR$\stm32l151project.icf</file>
       <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_adc.c</file>
-      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\src\misc.c</file>
-      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_crc.c</file>
-      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_dma.c</file>
-      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_gpio.c</file>
-      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_i2c.c</file>
-      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_rcc.c</file>
-      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_spi.c</file>
-      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_tim.c</file>
-      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\inc\stm32l1xx_i2c.h</file>
-      <file>$PROJ_DIR$\Debug\Obj\spi_PGA112.o</file>
       <file>$PROJ_DIR$\system\system_stm32l1xx.c</file>
       <file>$PROJ_DIR$\system\startup_stm32l1xx_md.s</file>
-      <file>$PROJ_DIR$\system\system_stm32l1xx.h</file>
-      <file>$PROJ_DIR$\Debug\Obj\spi_PGA112.pbi</file>
-      <file>$PROJ_DIR$\Debug\Obj\stm32l1xx_tim.pbi</file>
-      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\inc\stm32l1xx_adc.h</file>
-      <file>$PROJ_DIR$\sources\sync.c</file>
-      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\inc\stm32l1xx_dac.h</file>
-      <file>$TOOLKIT_DIR$\inc\c\DLib_Defaults.h</file>
-      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\inc\misc.h</file>
-      <file>$PROJ_DIR$\Debug\Obj\stm32l1xx_gpio.o</file>
-      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\inc\stm32l1xx_tim.h</file>
-      <file>$PROJ_DIR$\Debug\Obj\system_stm32l1xx.pbi</file>
-      <file>$PROJ_DIR$\Debug\Obj\stm32l1xx_dma.o</file>
-      <file>$PROJ_DIR$\system\stm32l1xx.h</file>
-      <file>$TOOLKIT_DIR$\inc\c\DLib_Product_string.h</file>
-      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\inc\stm32l1xx_spi.h</file>
-      <file>$PROJ_DIR$\Debug\Obj\spi_L151.pbi</file>
-      <file>$PROJ_DIR$\system\preinclude.h</file>
-      <file>$TOOLKIT_DIR$\CMSIS\Include\core_cmInstr.h</file>
-      <file>$TOOLKIT_DIR$\inc\c\intrinsics.h</file>
-      <file>$TOOLKIT_DIR$\inc\c\stdlib.h</file>
-      <file>$PROJ_DIR$\Debug\Obj\stm32l1xx_dma.pbi</file>
-      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\inc\stm32l1xx_dma.h</file>
-      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\inc\stm32l1xx_comp.h</file>
-      <file>$PROJ_DIR$\Debug\Obj\stm32l1xx_spi.o</file>
-      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\inc\stm32l1xx_pwr.h</file>
-      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\inc\stm32l1xx_rtc.h</file>
-      <file>$PROJ_DIR$\Debug\Obj\stm32l1xx_gpio.pbi</file>
-      <file>$TOOLKIT_DIR$\inc\c\cmsis_iar.h</file>
-      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\inc\stm32l1xx_wwdg.h</file>
-      <file>$TOOLKIT_DIR$\inc\c\ysizet.h</file>
-      <file>$PROJ_DIR$\Debug\Obj\stm32l1xx_i2c.o</file>
-      <file>$PROJ_DIR$\Debug\Exe\c.out</file>
-      <file>$TOOLKIT_DIR$\inc\c\DLib_Threads.h</file>
-      <file>$TOOLKIT_DIR$\inc\c\DLib_Product.h</file>
-      <file>$PROJ_DIR$\Debug\Obj\command_handler.o</file>
-      <file>$PROJ_DIR$\Debug\Obj\config.pbi</file>
-      <file>$TOOLKIT_DIR$\CMSIS\Include\core_cm3.h</file>
-      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\inc\stm32l1xx_rcc.h</file>
-      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\inc\stm32l1xx_lcd.h</file>
-      <file>$PROJ_DIR$\Debug\Obj\sync.pbi</file>
-      <file>$PROJ_DIR$\Debug\Obj\stm32l1xx_tim.o</file>
-      <file>$PROJ_DIR$\Debug\Obj\stm32l1xx_rcc.pbi</file>
-      <file>$PROJ_DIR$\Debug\Obj\stm32l1xx_rcc.o</file>
-      <file>$PROJ_DIR$\Debug\Obj\stm32l1xx_crc.o</file>
-      <file>$TOOLKIT_DIR$\CMSIS\Include\core_cmFunc.h</file>
-      <file>$PROJ_DIR$\Debug\Obj\stm32l1xx_i2c.pbi</file>
-      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\inc\stm32l1xx_flash.h</file>
-      <file>$TOOLKIT_DIR$\inc\c\ystdio.h</file>
-      <file>$PROJ_DIR$\Debug\Obj\misc.o</file>
-      <file>$PROJ_DIR$\Debug\Obj\main.o</file>
-      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\inc\stm32l1xx_syscfg.h</file>
-      <file>$PROJ_DIR$\Debug\Exe\stm32l151project.hex</file>
-      <file>$PROJ_DIR$\Debug\Obj\stm32l1xx_crc.pbi</file>
-      <file>$TOOLKIT_DIR$\inc\c\stdio.h</file>
-      <file>$TOOLKIT_DIR$\inc\c\string.h</file>
-      <file>$TOOLKIT_DIR$\inc\c\ycheck.h</file>
-      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\inc\stm32l1xx_exti.h</file>
-      <file>$PROJ_DIR$\Debug\Obj\main.pbi</file>
-      <file>$TOOLKIT_DIR$\inc\c\stdint.h</file>
-      <file>$PROJ_DIR$\Debug\Obj\stm32l1xx_adc.o</file>
-      <file>$PROJ_DIR$\Debug\Obj\config.o</file>
-      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\inc\stm32l1xx_usart.h</file>
-      <file>$TOOLKIT_DIR$\inc\c\DLib_Config_Normal.h</file>
-      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\inc\stm32l1xx_iwdg.h</file>
-      <file>$PROJ_DIR$\Debug\Obj\stm32l1xx_spi.pbi</file>
-      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\inc\stm32l1xx_dbgmcu.h</file>
-      <file>$PROJ_DIR$\Debug\Obj\system_stm32l1xx.o</file>
-      <file>$PROJ_DIR$\stm32l151project.icf</file>
-      <file>$PROJ_DIR$\Debug\Obj\stm32l151project.pbd</file>
-      <file>$TOOLKIT_DIR$\lib\m7M_tl.a</file>
+      <file>$PROJ_DIR$\Debug\Obj\i2c_f207.o</file>
+      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_tim.c</file>
+      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_spi.c</file>
+      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\src\misc.c</file>
+      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_rcc.c</file>
+      <file>$PROJ_DIR$\Debug\Obj\i2c_f207.pbi</file>
+      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_i2c.c</file>
+      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_dma.c</file>
+      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_gpio.c</file>
+      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_crc.c</file>
+      <file>$PROJ_DIR$\Debug\Obj\adpcm_coder.o</file>
       <file>$PROJ_DIR$\Debug\Obj\misc.pbi</file>
+      <file>$TOOLKIT_DIR$\lib\m7M_tl.a</file>
+      <file>$PROJ_DIR$\Debug\Obj\system_stm32l1xx.o</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Config_Normal.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\adpcm_coder.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\stm32l151project.pbd</file>
+      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\inc\stm32l1xx_iwdg.h</file>
       <file>$PROJ_DIR$\Debug\Obj\stm32l1xx_adc.pbi</file>
-      <file>$PROJ_DIR$\Debug\Obj\spi_L151.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\stm32l1xx_spi.pbi</file>
       <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\inc\stm32l1xx_gpio.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\spi_L151.o</file>
+      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\inc\stm32l1xx_dbgmcu.h</file>
       <file>$TOOLKIT_DIR$\inc\c\yvals.h</file>
-      <file>$TOOLKIT_DIR$\lib\rt7M_tl.a</file>
-      <file>$PROJ_DIR$\Debug\Obj\sync.o</file>
-      <file>$TOOLKIT_DIR$\lib\shb_l.a</file>
-      <file>$TOOLKIT_DIR$\lib\dl7M_tln.a</file>
-      <file>$PROJ_DIR$\Debug\Obj\startup_stm32l1xx_md.o</file>
-      <file>$PROJ_DIR$\Debug\Obj\command_handler.pbi</file>
+      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\inc\stm32l1xx_usart.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\stdio.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\config.o</file>
+      <file>$TOOLKIT_DIR$\inc\c\ycheck.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\stm32l1xx_tim.pbi</file>
+      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\inc\misc.h</file>
+      <file>$TOOLKIT_DIR$\inc\c\stdint.h</file>
+      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\inc\stm32l1xx_flash.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\main.pbi</file>
+      <file>$PROJ_DIR$\system\system_stm32l1xx.h</file>
+      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\inc\stm32l1xx_exti.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\stm32l1xx_crc.pbi</file>
+      <file>$PROJ_DIR$\Debug\Exe\stm32l151project.hex</file>
+      <file>$TOOLKIT_DIR$\inc\c\ystdio.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\stm32l1xx_crc.o</file>
       <file>$TOOLKIT_DIR$\inc\c\xencoding_limits.h</file>
       <file>$PROJ_DIR$\system\stm32l1xx_conf.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\misc.o</file>
       <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\inc\stm32l1xx_crc.h</file>
+      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\inc\stm32l1xx_syscfg.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\main.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\command_handler.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\stm32l1xx_i2c.pbi</file>
+      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\inc\stm32l1xx_pwr.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\transmit_handler.pbi</file>
+      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\inc\stm32l1xx_dma.h</file>
+      <file>$TOOLKIT_DIR$\lib\shb_l.a</file>
+      <file>$TOOLKIT_DIR$\lib\dl7M_tln.a</file>
+      <file>$TOOLKIT_DIR$\inc\c\intrinsics.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\sync.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\spi_f207.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\transmit_handler.o</file>
+      <file>$TOOLKIT_DIR$\inc\c\stdlib.h</file>
+      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\inc\stm32l1xx_rcc.h</file>
+      <file>$TOOLKIT_DIR$\lib\rt7M_tl.a</file>
+      <file>$PROJ_DIR$\Debug\Obj\spi_f207.o</file>
+      <file>$PROJ_DIR$\system\preinclude.h</file>
+      <file>$TOOLKIT_DIR$\CMSIS\Include\core_cmInstr.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\startup_stm32l1xx_md.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\stm32l1xx_i2c.o</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Threads.h</file>
+      <file>$PROJ_DIR$\sources\spi_L151.c</file>
+      <file>$PROJ_DIR$\Debug\Exe\c.out</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Defaults.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\stm32l1xx_rcc.o</file>
+      <file>$PROJ_DIR$\Debug\Obj\stm32l1xx_gpio.pbi</file>
+      <file>$PROJ_DIR$\sources\command_handler.c</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Product.h</file>
+      <file>$PROJ_DIR$\sources\spi_L151.h</file>
+      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\inc\stm32l1xx_i2c.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\command_handler.o</file>
+      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\inc\stm32l1xx_adc.h</file>
+      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\inc\stm32l1xx_dac.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\spi_pga112.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\stm32l1xx_dma.o</file>
+      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\inc\stm32l1xx_tim.h</file>
+      <file>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\inc\stm32l1xx_spi.h</file>
+      <file>$PROJ_DIR$\system\stm32l1xx.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\spi_L151.pbi</file>
+      <file>$TOOLKIT_DIR$\inc\c\string.h</file>
+      <file>$PROJ_DIR$\sources\sync.c</file>
+      <file>$PROJ_DIR$\Debug\Obj\system_stm32l1xx.pbi</file>
+      <file>$TOOLKIT_DIR$\inc\c\DLib_Product_string.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\stm32l1xx_gpio.o</file>
     </outputs>
-    <file>
-      <name>[ROOT_NODE]</name>
-      <outputs>
-        <tool>
-          <name>ILINK</name>
-          <file> 52</file>
-        </tool>
-      </outputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\sources\command_handler.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 101</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 55</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 103 24 33 57 79 76 95 27 83 54 102 53 38 48 39 65 21 104 43 26 86 42 77 67 94 71 17 84 59 45 58 46 35 30 82 49 28 5 74 50 68 40 2</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 37 103 24 33 57 79 76 95 27 83 54 102 53 38 48 39 65 21 104 43 26 86 42 77 67 94 71 17 84 59 45 58 46 35 30 82 49 28 5 74 50 68 40 2</file>
-        </tool>
-      </inputs>
-    </file>
     <file>
       <name>$PROJ_DIR$\sources\main.c</name>
       <outputs>
         <tool>
           <name>BICOMP</name>
-          <file> 78</file>
+          <file> 63</file>
         </tool>
         <tool>
           <name>ICCARM</name>
-          <file> 70</file>
+          <file> 75</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 103 24 33 57 79 76 95 27 83 54 102 53 38 48 39 65 21 104 43 26 86 42 77 67 94 71 17 84 59 45 58 46 35 30 82 49 28 5 7 74 50 68 40 2</file>
+          <file> 22 112 15 61 58 54 98 45 102 70 95 92 6 83 10 64 71 106 73 5 107 53 80 65 62 51 74 104 48 11 78 88 3 111 110 55 4 60 56 2 68 21 24 20</file>
         </tool>
         <tool>
           <name>ICCARM</name>
-          <file> 37 103 24 33 57 79 76 95 27 83 54 102 53 38 48 39 65 21 104 43 26 86 42 77 67 94 71 17 84 59 45 58 46 35 30 82 49 28 5 7 74 50 68 40 2</file>
+          <file> 91 22 112 15 61 58 54 98 45 102 70 95 92 6 83 10 64 71 106 73 5 107 53 80 65 62 51 74 104 48 11 78 88 3 111 110 55 4 60 56 2 68 21 24 20</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\sources\spi_f207.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 85</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 90</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 21 71 106 112 15 61 58 54 98 45 102 70 95 92 6 83 10 64 73 5 107 53 80 65 62 51 74 104 48 11 78 88 3 111 110 55 4 60 22 56 2 68</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 91 21 71 106 112 15 61 58 54 98 45 102 70 95 92 6 83 10 64 73 5 107 53 80 65 62 51 74 104 48 11 78 88 3 111 110 55 4 60 22 56 2 68</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\sources\spi_pga112.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 108</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 9</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 24 51 112 15 61 58 54 98 45 102 70 95 92 6 83 10 64 71 106 73 5 107 53 80 65 62 74 104 48 11 78 88 3 111 110 55 4 60 22 56 2 68</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 91 24 51 112 15 61 58 54 98 45 102 70 95 92 6 83 10 64 71 106 73 5 107 53 80 65 62 74 104 48 11 78 88 3 111 110 55 4 60 22 56 2 68</file>
         </tool>
       </inputs>
     </file>
@@ -172,26 +200,49 @@
       <outputs>
         <tool>
           <name>BICOMP</name>
-          <file> 56</file>
+          <file> 8</file>
         </tool>
         <tool>
           <name>ICCARM</name>
-          <file> 81</file>
+          <file> 57</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 103 24 33 57 79 76 95 27 83 54 102 53 38 48 39 65 21 104 43 26 86 42 77 67 94 71 17 84 59 45 58 46 35 30 82 49 28 2</file>
+          <file> 22 112 15 61 58 54 98 45 102 70 95 92 6 83 10 64 71 106 73 5 107 53 80 65 62 51 74 104 48 11 78 88 3 111 110 55 4 60 56 2 68</file>
         </tool>
         <tool>
           <name>ICCARM</name>
-          <file> 37 103 24 33 57 79 76 95 27 83 54 102 53 38 48 39 65 21 104 43 26 86 42 77 67 94 71 17 84 59 45 58 46 35 30 82 49 28 2</file>
+          <file> 91 22 112 15 61 58 54 98 45 102 70 95 92 6 83 10 64 71 106 73 5 107 53 80 65 62 51 74 104 48 11 78 88 3 111 110 55 4 60 56 2 68</file>
         </tool>
       </inputs>
     </file>
     <file>
-      <name>$PROJ_DIR$\sources\spi_L151.c</name>
+      <name>$PROJ_DIR$\sources\adpcm_coder.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 46</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 41</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 22 112 15 61 58 54 98 45 102 70 95 92 6 83 10 64 71 106 73 5 107 53 80 65 62 51 74 104 48 11 78 88 3 111 110 55 4 60 56 2 68</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 91 22 112 15 61 58 54 98 45 102 70 95 92 6 83 10 64 71 106 73 5 107 53 80 65 62 51 74 104 48 11 78 88 3 111 110 55 4 60 56 2 68</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\sources\i2c_f207.c</name>
       <outputs>
         <tool>
           <name>BICOMP</name>
@@ -199,36 +250,40 @@
         </tool>
         <tool>
           <name>ICCARM</name>
-          <file> 93</file>
+          <file> 31</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
+          <name>BICOMP</name>
+          <file> 22 112 15 61 58 54 98 45 102 70 95 92 6 83 10 64 71 106 73 5 107 53 80 65 62 51 74 104 48 11 78 88 3 111 110 55 4 60 56 2 68 21</file>
+        </tool>
+        <tool>
           <name>ICCARM</name>
-          <file> 37 5 103 24 33 57 79 76 95 27 83 54 102 53 38 48 39 65 21 104 43 26 86 42 77 67 94 71 17 84 59 45 58 46 35 30 82 49 28 75 50 34 2</file>
+          <file> 91 22 112 15 61 58 54 98 45 102 70 95 92 6 83 10 64 71 106 73 5 107 53 80 65 62 51 74 104 48 11 78 88 3 111 110 55 4 60 56 2 68 21</file>
         </tool>
       </inputs>
     </file>
     <file>
-      <name>$PROJ_DIR$\sources\spi_PGA112.c</name>
+      <name>$PROJ_DIR$\sources\transmit_handler.c</name>
       <outputs>
         <tool>
           <name>BICOMP</name>
-          <file> 22</file>
+          <file> 79</file>
         </tool>
         <tool>
           <name>ICCARM</name>
-          <file> 18</file>
+          <file> 86</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 7 94 33 57 79 76 95 27 83 54 102 53 38 48 39 65 21 103 24 104 43 26 86 42 77 67 71 17 84 59 45 58 46 35 30 82 49 28 2</file>
+          <file> 22 112 15 61 58 54 98 45 102 70 95 92 6 83 10 64 71 106 73 5 107 53 80 65 62 51 74 104 48 11 78 88 3 111 110 55 4 60 56 2 68 21</file>
         </tool>
         <tool>
           <name>ICCARM</name>
-          <file> 37 7 94 33 57 79 76 95 27 83 54 102 53 38 48 39 65 21 103 24 104 43 26 86 42 77 67 71 17 84 59 45 58 46 35 30 82 49 28 2</file>
+          <file> 91 22 112 15 61 58 54 98 45 102 70 95 92 6 83 10 64 71 106 73 5 107 53 80 65 62 51 74 104 48 11 78 88 3 111 110 55 4 60 56 2 68 21</file>
         </tool>
       </inputs>
     </file>
@@ -237,164 +292,30 @@
       <outputs>
         <tool>
           <name>BICOMP</name>
-          <file> 92</file>
+          <file> 49</file>
         </tool>
         <tool>
           <name>ICCARM</name>
-          <file> 80</file>
+          <file> 13</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 24 33 57 79 76 95 27 83 54 102 53 38 48 39 65 21 103 104 43 26 86 42 77 67 94 71 17 84 59 45 58 46 35 30 82 49 28</file>
+          <file> 106 112 15 61 58 54 98 45 102 70 95 92 6 83 10 64 71 73 5 107 53 80 65 62 51 74 104 48 11 78 88 3 111 110 55 4 60</file>
         </tool>
         <tool>
           <name>ICCARM</name>
-          <file> 37 24 33 57 79 76 95 27 83 54 102 53 38 48 39 65 21 103 104 43 26 86 42 77 67 94 71 17 84 59 45 58 46 35 30 82 49 28</file>
+          <file> 91 106 112 15 61 58 54 98 45 102 70 95 92 6 83 10 64 71 73 5 107 53 80 65 62 51 74 104 48 11 78 88 3 111 110 55 4 60</file>
         </tool>
       </inputs>
     </file>
     <file>
-      <name>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\src\misc.c</name>
+      <name>$PROJ_DIR$\system\system_stm32l1xx.c</name>
       <outputs>
         <tool>
           <name>BICOMP</name>
-          <file> 91</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 69</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 28 33 57 79 76 95 27 83 54 102 53 38 48 39 65 21 103 24 104 43 26 86 42 77 67 94 71 17 84 59 45 58 46 35 30 82 49</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 37 28 33 57 79 76 95 27 83 54 102 53 38 48 39 65 21 103 24 104 43 26 86 42 77 67 94 71 17 84 59 45 58 46 35 30 82 49</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_crc.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 73</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 64</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 104 33 57 79 76 95 27 83 54 102 53 38 48 39 65 21 103 24 43 26 86 42 77 67 94 71 17 84 59 45 58 46 35 30 82 49 28</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 37 104 33 57 79 76 95 27 83 54 102 53 38 48 39 65 21 103 24 43 26 86 42 77 67 94 71 17 84 59 45 58 46 35 30 82 49 28</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_dma.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 41</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 32</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 42 33 57 79 76 95 27 83 54 102 53 38 48 39 65 21 103 24 104 43 26 86 77 67 94 71 17 84 59 45 58 46 35 30 82 49 28</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 37 42 33 57 79 76 95 27 83 54 102 53 38 48 39 65 21 103 24 104 43 26 86 77 67 94 71 17 84 59 45 58 46 35 30 82 49 28</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_gpio.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 47</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 29</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 94 33 57 79 76 95 27 83 54 102 53 38 48 39 65 21 103 24 104 43 26 86 42 77 67 71 17 84 59 45 58 46 35 30 82 49 28</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 37 94 33 57 79 76 95 27 83 54 102 53 38 48 39 65 21 103 24 104 43 26 86 42 77 67 71 17 84 59 45 58 46 35 30 82 49 28</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_i2c.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 66</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 51</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 37 17 33 57 79 76 95 27 83 54 102 53 38 48 39 65 21 103 24 104 43 26 86 42 77 67 94 71 84 59 45 58 46 35 30 82 49 28</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_rcc.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 62</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 63</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 58 33 57 79 76 95 27 54 102 53 38 48 39 65 21 103 24 104 43 26 86 42 77 67 94 71 17 84 59 45 46 35 30 82 49 28</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 37 58 33 57 79 76 95 27 83 54 102 53 38 48 39 65 21 103 24 104 43 26 86 42 77 67 94 71 17 84 59 45 46 35 30 82 49 28</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_spi.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 85</file>
+          <file> 116</file>
         </tool>
         <tool>
           <name>ICCARM</name>
@@ -404,57 +325,11 @@
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 35 33 57 79 76 95 27 54 102 53 38 48 39 65 21 103 24 104 43 26 86 42 77 67 94 71 17 84 59 45 58 46 30 82 49 28</file>
+          <file> 112 15 61 58 54 98 45 102 70 95 92 6 83 10 64 71 106 73 5 107 53 80 65 62 51 74 104 48 11 78 88 3 111 110 55 4 60</file>
         </tool>
         <tool>
           <name>ICCARM</name>
-          <file> 37 35 33 57 79 76 95 27 83 54 102 53 38 48 39 65 21 103 24 104 43 26 86 42 77 67 94 71 17 84 59 45 58 46 30 82 49 28</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_tim.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 23</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 61</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 30 33 57 79 76 95 27 54 102 53 38 48 39 65 21 103 24 104 43 26 86 42 77 67 94 71 17 84 59 45 58 46 35 82 49 28</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 37 30 33 57 79 76 95 27 83 54 102 53 38 48 39 65 21 103 24 104 43 26 86 42 77 67 94 71 17 84 59 45 58 46 35 82 49 28</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\system\system_stm32l1xx.c</name>
-      <outputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 31</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 87</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>BICOMP</name>
-          <file> 33 57 79 76 95 27 54 102 53 38 48 39 65 21 103 24 104 43 26 86 42 77 67 94 71 17 84 59 45 58 46 35 30 82 49 28</file>
-        </tool>
-        <tool>
-          <name>ICCARM</name>
-          <file> 37 33 57 79 76 95 27 83 54 102 53 38 48 39 65 21 103 24 104 43 26 86 42 77 67 94 71 17 84 59 45 58 46 35 30 82 49 28</file>
+          <file> 91 112 15 61 58 54 98 45 102 70 95 92 6 83 10 64 71 106 73 5 107 53 80 65 62 51 74 104 48 11 78 88 3 111 110 55 4 60</file>
         </tool>
       </inputs>
     </file>
@@ -463,30 +338,223 @@
       <outputs>
         <tool>
           <name>AARM</name>
-          <file> 100</file>
+          <file> 93</file>
         </tool>
       </outputs>
     </file>
     <file>
-      <name>$PROJ_DIR$\sources\sync.c</name>
+      <name>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_tim.c</name>
       <outputs>
         <tool>
           <name>BICOMP</name>
-          <file> 60</file>
+          <file> 59</file>
         </tool>
         <tool>
           <name>ICCARM</name>
-          <file> 97</file>
+          <file> 7</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>BICOMP</name>
-          <file> 103 24 33 57 79 76 95 27 54 102 53 38 48 39 65 21 104 43 26 86 42 77 67 94 71 17 84 59 45 58 46 35 30 82 49 28 5 74 50 68 40 2</file>
+          <file> 110 112 15 61 58 54 98 45 102 70 95 92 6 83 10 64 71 106 73 5 107 53 80 65 62 51 74 104 48 11 78 88 3 111 55 4 60</file>
         </tool>
         <tool>
           <name>ICCARM</name>
-          <file> 37 103 24 33 57 79 76 95 27 83 54 102 53 38 48 39 65 21 104 43 26 86 42 77 67 94 71 17 84 59 45 58 46 35 30 82 49 28 5 74 50 68 40 2</file>
+          <file> 91 110 112 15 61 58 54 98 45 102 70 95 92 6 83 10 64 71 106 73 5 107 53 80 65 62 51 74 104 48 11 78 88 3 111 55 4 60</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_spi.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 50</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 1</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 111 112 15 61 58 54 98 45 102 70 95 92 6 83 10 64 71 106 73 5 107 53 80 65 62 51 74 104 48 11 78 88 3 110 55 4 60</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 91 111 112 15 61 58 54 98 45 102 70 95 92 6 83 10 64 71 106 73 5 107 53 80 65 62 51 74 104 48 11 78 88 3 110 55 4 60</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\src\misc.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 42</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 72</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 60 112 15 61 58 54 98 45 102 70 95 92 6 83 10 64 71 106 73 5 107 53 80 65 62 51 74 104 48 11 78 88 3 111 110 55 4</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 91 60 112 15 61 58 54 98 45 102 70 95 92 6 83 10 64 71 106 73 5 107 53 80 65 62 51 74 104 48 11 78 88 3 111 110 55 4</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_rcc.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 12</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 99</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 88 112 15 61 58 54 98 45 102 70 95 92 6 83 10 64 71 106 73 5 107 53 80 65 62 51 74 104 48 11 78 3 111 110 55 4 60</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 91 88 112 15 61 58 54 98 45 102 70 95 92 6 83 10 64 71 106 73 5 107 53 80 65 62 51 74 104 48 11 78 3 111 110 55 4 60</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_i2c.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 77</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 94</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 104 112 15 61 58 54 98 45 102 70 95 92 6 83 10 64 71 106 73 5 107 53 80 65 62 51 74 48 11 78 88 3 111 110 55 4 60</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 91 104 112 15 61 58 54 98 45 102 70 95 92 6 83 10 64 71 106 73 5 107 53 80 65 62 51 74 48 11 78 88 3 111 110 55 4 60</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_dma.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 14</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 109</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 80 112 15 61 58 54 98 45 102 70 95 92 6 83 10 64 71 106 73 5 107 53 65 62 51 74 104 48 11 78 88 3 111 110 55 4 60</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 91 80 112 15 61 58 54 98 45 102 70 95 92 6 83 10 64 71 106 73 5 107 53 65 62 51 74 104 48 11 78 88 3 111 110 55 4 60</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_gpio.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 100</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 118</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 51 112 15 61 58 54 98 45 102 70 95 92 6 83 10 64 71 106 73 5 107 53 80 65 62 74 104 48 11 78 88 3 111 110 55 4 60</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 91 51 112 15 61 58 54 98 45 102 70 95 92 6 83 10 64 71 106 73 5 107 53 80 65 62 74 104 48 11 78 88 3 111 110 55 4 60</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\STM32L1xx_StdPeriph_Driver\src\stm32l1xx_crc.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 66</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 69</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 73 112 15 61 58 54 98 45 102 70 95 92 6 83 10 64 71 106 5 107 53 80 65 62 51 74 104 48 11 78 88 3 111 110 55 4 60</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 91 73 112 15 61 58 54 98 45 102 70 95 92 6 83 10 64 71 106 5 107 53 80 65 62 51 74 104 48 11 78 88 3 111 110 55 4 60</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>[ROOT_NODE]</name>
+      <outputs>
+        <tool>
+          <name>ILINK</name>
+          <file> 97</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\sources\spi_L151.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 113</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 52</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 103 71 106 112 15 61 58 54 98 45 102 70 95 92 6 83 10 64 73 5 107 53 80 65 62 51 74 104 48 11 78 88 3 111 110 55 4 60 114 2 117 22</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 91 103 71 106 112 15 61 58 54 98 45 102 70 95 92 6 83 10 64 73 5 107 53 80 65 62 51 74 104 48 11 78 88 3 111 110 55 4 60 114 2 117 22</file>
         </tool>
       </inputs>
     </file>
@@ -495,22 +563,59 @@
       <outputs>
         <tool>
           <name>OBJCOPY</name>
-          <file> 72</file>
+          <file> 67</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>ILINK</name>
-          <file> 88 55 81 70 69 93 18 100 80 64 32 29 51 63 44 61 87 98 96 90 99</file>
+          <file> 27 41 57 31 75 72 90 9 93 13 69 109 118 94 99 1 7 44 86 81 89 43 82</file>
         </tool>
       </inputs>
     </file>
     <file>
-      <name>$PROJ_DIR$\Debug\Obj\stm32l151project.pbd</name>
+      <name>$PROJ_DIR$\sources\command_handler.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 76</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 105</file>
+        </tool>
+      </outputs>
       <inputs>
         <tool>
-          <name>BILINK</name>
-          <file> 101 56 78 91 36 22 92 73 41 47 66 62 85 23 31</file>
+          <name>BICOMP</name>
+          <file> 71 106 112 15 61 58 54 98 45 102 70 95 92 6 83 10 64 73 5 107 53 80 65 62 51 74 104 48 11 78 88 3 111 110 55 4 60 103 56 2 68 87 22</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 91 71 106 112 15 61 58 54 98 45 102 70 95 92 6 83 10 64 73 5 107 53 80 65 62 51 74 104 48 11 78 88 3 111 110 55 4 60 103 56 2 68 87 22</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\sources\sync.c</name>
+      <outputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 0</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 84</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 71 106 112 15 61 58 54 98 102 70 95 92 6 83 10 64 73 5 107 53 80 65 62 51 74 104 48 11 78 88 3 111 110 55 4 60 103 56 2 68 87 22</file>
+        </tool>
+        <tool>
+          <name>ICCARM</name>
+          <file> 91 71 106 112 15 61 58 54 98 45 102 70 95 92 6 83 10 64 73 5 107 53 80 65 62 51 74 104 48 11 78 88 3 111 110 55 4 60 103 56 2 68 87 22</file>
         </tool>
       </inputs>
     </file>
