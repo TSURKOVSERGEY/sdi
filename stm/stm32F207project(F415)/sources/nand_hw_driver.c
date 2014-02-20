@@ -11,7 +11,7 @@ void NAND_Config(void)
   nand_ecc_enable(0);
   nand_ecc_enable(1);
   
-  nand_erase_super_block(0,alarm_data.PageAdressErase);
+  //nand_erase_super_block(0,alarm_data.PageAdressErase);
   //nand_erase_super_block(1,alarm_data.PageAdressErase);
   //alarm_data.PageAdressErase += 64;
 

@@ -217,7 +217,15 @@ void SendMessage(int id, unsigned int msg_id, void* data, unsigned int len)
      
   if(pbuf_take(pout[id],(uint8_t*)&tx_udp_msg[id],tx_udp_msg[id].msg_len + UDP_HEADER_SIZE) == ERR_OK)
   {
-     if(udp_sendto(pudp_pcb[id],pout[id],&eth_ini_dat.addr[id],eth_ini_dat.UDP_TX_PORT[id]) != ERR_OK)  rew_status[id] = 2;
+    struct ip_addr tx;
+    IP4_ADDR(&tx,192,9,206,204);
+    pudp_pcb[id]->remote_ip = tx;
+    pudp_pcb[id]->remote_port = 456;
+    
+     if(udp_sendto(pudp_pcb[id],pout[id],&eth_ini_dat.addr[id],eth_ini_dat.UDP_TX_PORT[id]) != ERR_OK) 
+     {
+        rew_status[id] = 2;
+     }
   }
   else rew_status[id] = 1;
 }

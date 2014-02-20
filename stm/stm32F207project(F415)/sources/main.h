@@ -42,6 +42,12 @@
 #define MAP_BB_ADDRES        4095  // физический адрес блока FLASH ( располажения карты исправности блоков )
 #define TWS_ADDRES           4094  // физический адрес блока FLASH ( общего времени наработки на отказ )
 
+#define DATA_CONFIG_LOAD     1
+#define DATA_CONFIG_NEW      2
+#define ERASE_MODE           1
+#define NOT_ERASE_MODE       2
+
+
 ////////////////////////////////////////////////////////////////////////////////
 // MT24 array organization
 // страница - 2048 байт действительных данных, + 64 бита служебной
@@ -49,7 +55,8 @@
 // всего 4096 блоков
 ////////////////////////////////////////////////////////////////////////////////
 
-#define BEGIN_PAGE           0 //(MAX_PAGE_IN_NAND - 6000) //0
+#define SB_HEADER_SIZE       33 // размер заголовка структуры файла (без crc и IPS)
+#define BEGIN_PAGE           (MAX_PAGE_IN_NAND - 6000) //0
 #define MAX_FILE             1000
 #define MAX_ERASE_PAGE       PAGE_IN_SBLOCK 
 #define MAX_PAGE_IN_NAND     261888 // (4092 * 64 )  // максимальное колличество страниц на всей флеш ADR = (0..4091)
@@ -83,6 +90,7 @@
 #define CHECK_CONNECT        1
 #define START_AUDIO_STREAM   2
 #define STOP_AUDIO_STREAM    3
+#define NEW                  4
 
 #define GET_SYS_INFO         20
 #define GET_TOTAL_INFO       21
@@ -118,7 +126,7 @@
 #define SUPER_BLOCK_RECORDED 3
 #define SUPER_BLOCK_READ     4
  
-#define SUPER_BLOCK_ID       0xA1B2C3D4
+//#define SUPER_BLOCK_ID       0xA1B2C3D4
 #define ADPCM_PAGE_ID        2
 #define EONE_PAGE_ID         3
 #define ALARM_ID             4
@@ -218,7 +226,7 @@ typedef struct
  } udp_message_struct;
 #pragma pack(pop)
 
-#define MAX_ERROR 18
+#define MAX_ERROR 23
  
 #pragma pack(push,1)   // структура исправности блоков
  typedef struct  
@@ -230,28 +238,27 @@ typedef struct
    uint32_t read_eth_ini_error[2];       // (6+7)   ошибка чтения структуры инициализационных сетевых параметров (*)
    uint32_t read_total_time_error[2];    // (8+9)   ошибка чтения структуры общего времени работы и количества циклов записи FLASH
    uint32_t read_map_bb_error[2];        // (10+11) ошибка инициализации карты файловой системы (две копии)
-   uint32_t rtc_error;                   // (12)    ошибка RTC (*)
-   uint32_t f_write_error;               // (13)    ошибка записи файла 
-   uint32_t server_error;                // (14)    ошибка сервера ( колличество несчитанных файлов )
-   uint32_t f415_spi1_error;             // (15)    ошибка канала spi(f415->f207) 
-   uint32_t f415_spi2_error;             // (16)    ошибка канала spi(f415->pga112)
-   uint32_t f415_adc_config_error;       // (17)    ошибка инициализации АЦП 
-   uint32_t crc_binar_error;             // (18)    ошибка crc данных (по binar от f415) 
-   uint32_t crc_wr_nand_error;           // (19)    ошибка crc данных страницы FLASH (проверка перед записью)
-   uint32_t crc_rd_nand_error;           // (20)    ошибка crc данных страницы FLASH (проверка после чтения)
+   uint32_t nand_fs_error[2];            // (12+13) ошибка инициализации файловой системы
+   uint32_t rtc_error;                   // (14)    ошибка RTC (*)
+   uint32_t f_write_error;               // (15)    ошибка записи файла 
+   uint32_t server_error;                // (16)    ошибка сервера ( колличество несчитанных файлов )
+   uint32_t f415_spi1_error;             // (17)    ошибка канала spi(f415->f207) 
+   uint32_t f415_spi2_error;             // (18)    ошибка канала spi(f415->pga112)
+   uint32_t f415_adc_config_error;       // (19)    ошибка инициализации АЦП 
+   uint32_t crc_binar_error;             // (20)    ошибка crc данных (по binar от f415) 
+   uint32_t crc_wr_nand_error;           // (21)    ошибка crc данных страницы FLASH (проверка перед записью)
+   uint32_t crc_rd_nand_error;           // (22)    ошибка crc данных страницы FLASH (проверка после чтения)
    
    uint32_t bad_block_number;            // количество испорченных блоков FLASH
    uint32_t nand_work_counter[2];        // количество циклов записи FLASH (наработка на отказ) 
-   uint32_t pga112_gain[16];         // значения коэффициентов усиления PGA112
+   uint32_t pga112_gain[16];             // значения коэффициентов усиления PGA112
    uint32_t f415_mode;                   // текущий режим работы F415
    uint32_t f207_mode;                   // текущий режим работы F207
    uint64_t current_time;                // время текущее
    uint64_t total_time;                  // общее время работы платы ( наработки на отказ )
    
-   uint32_t f_o;
-   uint32_t f_c;
-   uint32_t f_w;
-   
+   uint8_t initial_done;
+   uint8_t mask[MAX_ERROR];                     // маска разрешенных ошибок для анализа светодиодом индекации
 
  } total_info_struct;
 #pragma pack(pop)
@@ -294,15 +301,16 @@ typedef struct
  
 #pragma pack(push,1)  // структура заголовка файла
  typedef struct
- { uint32_t id;                             // идентификатор файла
-   uint8_t  status;                         // текущее состояние файла
+ { uint8_t  status;                         // текущее состояние файла
    uint64_t time_open;                      // время создания файла
    uint64_t time_close;                     // время закрытия файла
    uint32_t sb_num;                         // имя файла ( идентификатор - номер )
    uint32_t page_real_write;                // колличество записанных страниц в файле
    uint32_t super_block_prev;               // указатель на предидущий файл
    uint32_t super_block_next;               // указатель на следующий файл
+   uint32_t crc_header;                     // контрольная сумма начального заголовка файла
    index_pointer_struct ips[MAX_DATA_PAGE]; // структура физический адресов страниц файла 
+   uint32_t crc_total;                      // контрольная сумма целикового заголовка файла
  } super_block_struct;
 #pragma pack(pop)
  
@@ -318,6 +326,8 @@ typedef struct
  typedef struct 
  { uint64_t total_time;      // общее время работы (в секундах)
    uint64_t total_cucle[2];  // количество полных циклов записи FLASH
+   uint8_t  index;
+   uint8_t  mode;
    uint32_t crc;             // контрольная сумма
  } total_work_struct;
 #pragma pack(pop) 
@@ -349,6 +359,7 @@ typedef struct
  } bad_block_map_struct;
 #pragma pack(pop)  
 
+ 
 #pragma pack(push,1)   
  typedef struct 
  { uint8_t  MAC_ADR[6];
@@ -372,6 +383,36 @@ typedef struct
   } page_header_struct;
 #pragma pack(pop) 
 
+  
+#pragma pack(push,1)   
+typedef struct 
+{
+  uint32_t Zagolovok;
+  
+  uint32_t RootDelay;             //секунд до эталона точного времени
+  uint32_t RootDispersion;        //номинальное значение временной ошибки относительно эталона (0-сот милисек) 
+  uint32_t IdentificEtalon;
+  uint32_t EtSecondMark;
+  uint32_t EtDolySecondMark;
+
+  uint32_t OriginateTimestampL;   // время запроса клиента к серверу
+  uint32_t OriginateTimestampH;   // 64 бита  
+  
+  uint32_t ReceiveTimestampL;     // время прихода запроса к серверу
+  uint32_t ReceiveTimestampH;     // 64 бита
+  
+  uint32_t TransmitTimestampL;    // время отклика клиенту 64бита
+  uint32_t TransmitTimestampH;    // 64 бита
+  
+  uint32_t Autentificator;        // (опционно) используется, когда необходима
+                                  // аутентификация, и содержит в себе ключевой идентификатор и сообщение
+  uint32_t Dayjest1;              // хранит код аутентификации сообщения MAC (Message Authentication Code)     
+  uint32_t Dayjest2;              // 128 бит
+  uint32_t Dayjest3;
+  uint32_t Dayjest4;
+ 
+} STNP_Struct;
+#pragma pack(pop)
 
 ////////////////////////////////////////////////////////////////////////////////
 // FUNCTION_DEFINITION * FUNCTION_DEFINITION * FUNCTION_DEFINITION * FUNCTION_DE
@@ -392,7 +433,7 @@ void CRC_Config(void);
 uint32_t f415_SPI_Config(void);
 uint32_t f415_Config(void);
 void SuperBlock_Config(void);
-void Data_Config(void);
+void Data_Config(int mode);
 void LoadTwsStruct(void);
 
 void nand_erase_super_block(uint32_t id, uint32_t page);
@@ -400,6 +441,8 @@ void nand_erase_handler(void);
 void nand_sb_write_handler(void);
 void nand_sb_read_handler(void);
 void SetTime(uint8_t *time);
+int Restart_Handler(void);
+void SaveTotalTimeTotalMode(uint8_t mode);
 
 uint32_t crc32(void* pcBlock,  uint32_t len, uint32_t tot_len);
 uint32_t crc32_t(uint32_t crc, void * pcBlock, uint32_t len, uint32_t tot_len);
@@ -412,3 +455,5 @@ void GetSuperBlockHeader(uint32_t un_index, uint32_t sb_index);
 void GetSuperBlockPage(uint32_t page_address);
 void cmd_handler(int id);
 void SysTickTimer_Config(void);
+void TIM2_Config(void);
+void Set_SNTP_Timer(void);

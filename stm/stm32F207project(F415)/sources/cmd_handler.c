@@ -12,6 +12,8 @@ extern alarm_struct             alarm_data;
 extern ethernet_initial_struct  eth_ini_dat;
 extern bad_block_map_struct*    pmap_bb;
 extern total_work_struct        tws;
+extern int                      time_sync_status;
+
  
 void cmd_handler(int id)
 {
@@ -27,9 +29,11 @@ void cmd_handler(int id)
       
       case SET_TIME: 
         
-           SetTime((uint8_t*)&rx_udp_msg[id].data[0]);
-           SendMessage(id,SET_TIME + 100,NULL,0);
-           
+        // SetTime((uint8_t*)&rx_udp_msg[id].data[0]);
+        // SendMessage(id,SET_TIME + 100,NULL,0);
+        
+           Set_SNTP_Timer();
+           time_sync_status = 1;
       break;
     
       case GET_TIME: 
@@ -51,18 +55,36 @@ void cmd_handler(int id)
  
       break;
       
+      case NEW:
+
+
+         f415_WriteMessage(F415_STOP_STREAM,NULL,0);
+         GPIO_WriteBit(GPIOI,GPIO_Pin_0,Bit_SET); 
+         Data_Config(DATA_CONFIG_NEW);
+         nand_erase_super_block(0,alarm_data.PageAdressErase);   
+         tab[0].time[0]  = GetTime();    
+         SendMessage(id,NEW + 100,NULL,0);
+         
+      break;
+      
       case START_AUDIO_STREAM:
 
-          t_info.f207_mode = F207_AUDIO_STREAM_MODE;
-          f415_WriteMessage(F415_START_STREAM,NULL,0);
-          SendMessage(id,START_AUDIO_STREAM + 100,NULL,0);
-          
+          if((t_info.f207_mode != F207_AUDIO_STREAM_MODE) && (time_sync_status != 0))
+          {
+            t_info.f207_mode = F207_AUDIO_STREAM_MODE;
+            SendMessage(id,START_AUDIO_STREAM + 100,NULL,0);
+            SaveTotalTimeTotalMode(F207_AUDIO_STREAM_MODE);
+            f415_WriteMessage(F415_START_STREAM,NULL,0);
+            GPIO_WriteBit(GPIOI,GPIO_Pin_0,Bit_SET); 
+          }
+         
       break;
       
       case STOP_AUDIO_STREAM: 
     
           t_info.f207_mode = F207_STOP_MODE;
-          f415_WriteMessage(F415_STOP_STREAM,NULL,0);
+          f415_WriteMessage(F415_STOP_STREAM,NULL,0);            
+          SaveTotalTimeTotalMode(F207_STOP_MODE);
           SendMessage(id,STOP_AUDIO_STREAM + 100,NULL,0);
           
       break;  

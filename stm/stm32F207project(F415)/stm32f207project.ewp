@@ -2013,6 +2013,9 @@
       <name>$PROJ_DIR$\sources\nand_sb_write_driver.c</name>
     </file>
     <file>
+      <name>$PROJ_DIR$\sources\sntp.c</name>
+    </file>
+    <file>
       <name>$PROJ_DIR$\sources\spi_f415.c</name>
     </file>
     <file>

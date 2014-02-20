@@ -9,7 +9,8 @@
 #define MAC_ADDR4       0x32
 #define MAC_ADDR5       IP_ADDR3
 
-#define IP_ADDR0        192
+//////////////////////////////  THIS ///////////////////////////////////////////
+#define IP_ADDR0        192 
 #define IP_ADDR1        9
 #define IP_ADDR2        206
 #define IP_ADDR3        204
@@ -44,9 +45,9 @@
 #define ADR0_TX2_UDP    192
 #define ADR1_TX2_UDP    9
 #define ADR2_TX2_UDP    206
-#define ADR3_TX2_UDP    251
-#define PORT_RX2_UDP    50000
-#define PORT_TX2_UDP    50000
+#define ADR3_TX2_UDP    13
+#define PORT_RX2_UDP    6000
+#define PORT_TX2_UDP    6000
 
 
 void UDP_Config(void);

@@ -13,6 +13,8 @@ extern total_info_struct       t_info;
 extern total_work_struct       tws;
 extern uint64_t total_timer;
 extern uint8_t  server_control[2][MAX_FILE];
+extern uint32_t sb_header_size;
+extern void* pf;
 
 static int  write_page(uint8_t *page_bufer,unsigned long int page);
 static int  CheckBlockGetPageAdr(int mode);
@@ -50,23 +52,22 @@ enum
 // *****************************************************************************
 void nand_sb_write_handler(void)
 {
-  static void* pf = NULL;
-  uint32_t status;
+  //uint32_t status;
   
   if(adpcm_ready == 0) return;                  // Ожидаем все 16 каналов
   else if(CheckChangeNandMemory() == 1) return; // Ожидаем стирание блока
    
-
-      
+     
   for(int i = 0; i < MAX_CHANNEL; i++)     
   {
     if(adpcm_ctrl[i].done == 1)
     {
       if(pf == NULL)
       {
-        if((status == CheckTheEndOfTheNandMemory()) == F_OPEN_WRITE)
+    //    if((status = CheckTheEndOfTheNandMemory()) == F_OPEN_WRITE)
+        if(CheckTheEndOfTheNandMemory() == F_OPEN_WRITE)
         {
-           if((pf = f_open(alarm_data.super_block_real_write)) == NULL)
+          if((pf = f_open(alarm_data.super_block_real_write)) == NULL)
           {
             return;
           }
@@ -74,16 +75,16 @@ void nand_sb_write_handler(void)
         else return;
       }
         
-      GPIO_ToggleBits(GPIOI, GPIO_Pin_1); 
+      GPIO_ToggleBits(GPIOI, GPIO_Pin_0); 
       
       if((f_write(padpcm[adpcm_ctrl[i].id ^ 0x1][i]) == MAX_DATA_PAGE) || (CheckTheEndOfTheNandMemory() == F_CLOSE))
       {
         SetServerControlBit(pwsb->sb_num);
         pf = f_close();
-        GPIO_ToggleBits(GPIOI, GPIO_Pin_0); 
+       // GPIO_ToggleBits(GPIOI, GPIO_Pin_0); 
       }
         
-      GPIO_ToggleBits(GPIOI, GPIO_Pin_1);    
+      GPIO_ToggleBits(GPIOI, GPIO_Pin_0);    
       
       adpcm_ctrl[i].done = 0;
     }
@@ -103,7 +104,7 @@ static void* f_open(uint32_t f_name)
   
     if((status = CheckBlockGetPageAdr(HEADER_MODE)) == DONE)  // ПРОВЕРКА ЦЕЛОСТНОСТИ БЛОКА ПОД ЗАГОЛОВОК ЗАПИСЫВАЕМОГО ФАЙЛА
     {    
-      pwsb->id = SUPER_BLOCK_ID;                                // идентификатор файла
+//    pwsb->crc = 0;                                            // контрольная сумма заголовка
       pwsb->status = SUPER_BLOCK_OPEN;                          // текущий режим файла
       pwsb->time_open  = GetTime();                             // время открытия файла
       pwsb->time_close = 0;                                     // время закрытия файла
@@ -118,7 +119,6 @@ static void* f_open(uint32_t f_name)
     else if(status == FAILURE)
     {
       t_info.f_write_error = 0x1;                        // КРИТИЧЕСКАЯ ОШИБКА !!!!
-      t_info.f_o = pwsb->sb_num;
       return NULL;
     }
     else if(status == ENDED_MEMORY)
@@ -141,15 +141,11 @@ static void* f_close(void)
   uint16_t *pout = (uint16_t*)pwsb;
   uint32_t status;
   
-  if(pwsb->sb_num == 3)
-  {
-    delay(0);
-  }
-  
   if((status = CheckBlockGetPageAdr(HEADER_MODE)) != FAILURE)  // ПРОВЕРКА ЦЕЛОСТНОСТИ БЛОКА ПОД ЗАГОЛОВОК СЛЕДУЩЕГО ФАЙЛА
   {
     pwsb->status = SUPER_BLOCK_RECORDED;                  // текущий режим файла (ФАЙЛ ЗАПИСАН)
     pwsb->time_close = GetTime();                         // время закрытия файла
+   
     if(alarm_data.PageRealWrite == 0) 
     {
       pwsb->page_real_write = 0;
@@ -167,6 +163,9 @@ static void* f_close(void)
     {
       pwsb->super_block_next = 0;
     }
+    
+    pwsb->crc_header = crc32((uint8_t*)pwsb,SB_HEADER_SIZE,SB_HEADER_SIZE);
+    pwsb->crc_total  = crc32((uint8_t*)pwsb,sb_header_size,sb_header_size);
     
     for(i = 0; i < 64; i++) // Запись заголовка файла (64 страницы)
     {
@@ -189,8 +188,6 @@ static void* f_close(void)
   else
   {
     t_info.f_write_error = 0x1;  // КРИТИЧЕСКАЯ ОШИБКА !!!!
-    t_info.f_c = pwsb->sb_num;
-
   }
   
   update_tab_info(MODE_CLOSE);
@@ -216,8 +213,6 @@ static uint32_t f_write(void *padpcm_msg)
   else if(status == FAILURE)
   {
     t_info.f_write_error = 0x1;  // КРИТИЧЕСКАЯ ОШИБКА !!!!
-    t_info.f_w = pwsb->sb_num;
-
   }
   
   update_tab_info(MODE_WRITE);
@@ -229,16 +224,9 @@ static uint32_t f_write(void *padpcm_msg)
 ////////////////////////////////////////////////////////////////////////////////
 static void update_tab_info(int mode)
 {
-  static int first_start = 1;
   
   uint32_t index = alarm_data.index;
-  
-  if(first_start == 1)
-  {
-    tab[index].time[0]  = GetTime();   // время окончания записи флеш
-    first_start = 0;
-  }
-  
+   
   switch(mode)
   {
     case MODE_OPEN:
@@ -360,7 +348,7 @@ int CheckTheEndOfTheNandMemory(void)
 {
   if(alarm_data.state == STATE_WAIT_END_NFLASH)
   {
-    if((alarm_data.PageAdressWrite) >= MAX_PAGE_IN_NAND)
+    if(alarm_data.PageAdressWrite >= MAX_PAGE_IN_NAND)
     {
       
       if((alarm_data.nand_real_write[0] == 1) && (alarm_data.nand_real_write[1] == 1))
@@ -432,15 +420,6 @@ void nand_erase_handler(void)
   uint32_t index = alarm_data.index;
   int32_t  adr_dif = alarm_data.PageAdressErase - alarm_data.PageAdressWrite;
   
- // if(alarm_data.state == STATE_ERASE_NFLASH) 
-  //{
-    // стирание флеш  перед переходом на новый цикл
-    //nand_erase_super_block(index ^ 0x1,alarm_data.PageAdressErase);
-    //alarm_data.state = STATE_ERASE_NFLASH_DONE;
- // }
-  // стирание флеш в активном блоке 
- // else 
-    
   if((adr_dif > 0) && (adr_dif <= PAGE_IN_SBLOCK))
   {
     if(alarm_data.PageAdressErase < MAX_PAGE_IN_NAND)
@@ -499,6 +478,24 @@ void SetServerControlBit(uint32_t sb_index)
 ////////////////////////////////////////////////////////////////////////////////
 // SaveTotalTimeTotalCycle
 ////////////////////////////////////////////////////////////////////////////////
+void SaveTotalTimeTotalMode(uint8_t mode)
+{
+  LoadTwsStruct();
+  
+  nand_erase_block(0,TWS_ADDRES * 64); // первая копия 
+  nand_erase_block(1,TWS_ADDRES * 64); // вторая копия 
+  
+  delay(100);  
+  tws.mode = mode;
+    
+  tws.crc  = crc32((uint8_t*)&tws,sizeof(total_work_struct)-4,sizeof(total_work_struct)); 
+    
+  nand_16bit_write_page_ext(0,(uint16_t*)&tws,TWS_ADDRES * 64,sizeof(total_work_struct)); // первая копия 
+  nand_16bit_write_page_ext(1,(uint16_t*)&tws,TWS_ADDRES * 64,sizeof(total_work_struct)); // вторая копия 
+          
+  
+}
+
 void SaveTotalTimeTotalCycle(int id)
 {
   LoadTwsStruct();
@@ -510,6 +507,7 @@ void SaveTotalTimeTotalCycle(int id)
   
   tws.total_cucle[id] += 1;
   tws.total_time += total_timer;
+  tws.index = alarm_data.index ^ 1;
   tws.crc  = crc32((uint8_t*)&tws,sizeof(total_work_struct)-4,sizeof(total_work_struct)); 
    
   total_timer = 0;

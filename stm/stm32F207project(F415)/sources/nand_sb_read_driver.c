@@ -10,11 +10,12 @@ extern                         udp_message_struct  tx_udp_msg[MAX_UDP_SOCK];
 extern alarm_struct            alarm_data;
 extern total_info_struct       t_info;
 extern super_block_struct*     prsb;
+extern uint32_t                sb_header_size;
 static page_header_struct      ph;
 
 static int GetSuperBlockAdr(uint32_t *padr, uint32_t sb_num);
 static void ReadSuperBlockHeader(uint32_t adr, int read_mode);
-static int CheckSuperBlock(void);
+static int CheckSuperBlock(int read_mode);
 extern int rew_status;
 extern int wait_state;
 
@@ -49,7 +50,7 @@ void GetSuperBlockHeader(uint32_t unit_index, uint32_t sb_index)
   
   ph.unit_index = unit_index;
   
-  if(CheckSuperBlock())
+  if(CheckSuperBlock(ONE_PAGE))
   {
     if(sb_index == prsb->sb_num+1)
     {
@@ -80,7 +81,7 @@ void GetSuperBlockHeader(uint32_t unit_index, uint32_t sb_index)
   
   ReadSuperBlockHeader(page_adr,ALL_PAGE);
   
-  if(CheckSuperBlock()) 
+  if(CheckSuperBlock(ALL_PAGE)) 
   {
     psbh->status = SB_OK;
     psbh->time_open = prsb->time_open;
@@ -184,15 +185,20 @@ static int GetSuperBlockAdr(uint32_t *padr, uint32_t sb_num)
   while(1)
   {
     ReadSuperBlockHeader(adr,ONE_PAGE);
+      
+    if(CheckSuperBlock(ONE_PAGE) == 0) return 0;
+    //if(prsb->crc_header != crc32((uint8_t*)prsb,SB_HEADER_SIZE,SB_HEADER_SIZE)) return 0;
   
     if(prsb->sb_num != sb_num)
     {
-      if(prsb->id != SUPER_BLOCK_ID) return 0;
-      else if(prsb->super_block_next == NULL) return 0;
-           else
-           {
-             adr = prsb->super_block_next;
-           }
+      if(prsb->super_block_next == NULL) 
+      {
+        return 0;
+      }
+      else
+      {
+        adr = prsb->super_block_next;
+      }
     }
     else break;
   }
@@ -218,10 +224,32 @@ static void ReadSuperBlockHeader(uint32_t adr, int read_mode)
 }
 
 
-static int CheckSuperBlock(void)
+static int CheckSuperBlock(int read_mode)
 {
-  if(prsb->id == SUPER_BLOCK_ID) return 1;
-  else return 0;
+  if(read_mode == ONE_PAGE)
+  {
+    if(prsb->crc_header == crc32((uint8_t*)prsb,SB_HEADER_SIZE,SB_HEADER_SIZE))
+    {
+      return 1;
+    }
+    else
+    {
+      return 0;
+    }
+  }
+  else if(read_mode == ALL_PAGE)
+  {
+    if(prsb->crc_total == crc32((uint8_t*)prsb,sb_header_size,sb_header_size))
+    {
+      return 1;
+    }
+    else
+    {
+      return 0;
+    }  
+  
+  }
+  return 0;
 }
 
 void ClrServerControlBit(uint32_t unit_index, uint32_t sb_index)

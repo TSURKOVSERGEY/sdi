@@ -26,18 +26,21 @@ alarm_struct            alarm_data;
 ethernet_initial_struct eth_ini_dat;
 tab_struct              tab;
 total_work_struct       tws;
-
+void*                   pf;
+  
 uint64_t total_timer = 0;
 
 uint8_t  server_control[2][MAX_FILE];
 uint16_t spi_dma_buffer[2][SPI_RX_DMA];
 uint32_t rx_udp_msg_size;
 uint32_t tx_udp_msg_size;
+uint32_t sb_header_size;
 
 int msg_8bit_size;
 int msg_16bit_size;
 int msg_32bit_size;
 int get_page;
+int time_sync_status = 0;
 int rew_status = 0;
 
 __IO uint32_t LocalTime;
@@ -47,7 +50,7 @@ __IO uint32_t LocalTime;
 ////////////////////////////////////////////////////////////////////////////////
 void main()
 {
-    
+  sb_header_size = sizeof(super_block_struct) - 4;   
   msg_8bit_size  = sizeof(adpcm_msg)  / 2;
   msg_16bit_size = msg_8bit_size      / 2;
   msg_32bit_size = msg_8bit_size      / 4;
@@ -60,8 +63,6 @@ void main()
   CRC_Config();
   
   RTC_Config();
-  
-  Data_Config();
     
   delay(200);
     
@@ -76,20 +77,38 @@ void main()
   LED_Config();
  
   SRAM_Test();
-    
+  
   SuperBlock_Config();
    
   NAND_Config();
-    
-  for(int i = 0; i < MAX_ERROR; i++) 
-  {
-    if(*(((uint32_t*)&t_info)+i) == 1)
-    {
-       GPIO_WriteBit(GPIOI, GPIO_Pin_1,Bit_RESET);
-    }
-  }
-
+  
+  TIM2_Config();
+  
   GPIO_WriteBit(GPIOI, GPIO_Pin_0,Bit_RESET); 
+  
+  while(t_info.eth_bsp_error == 1) // цикл сетевого инициализации
+  {
+    delay(1000*60);
+    t_info.eth_bsp_error = 0;
+    ETH_Config();
+  };
+    
+  while(1) // цикл ожидания SNTP синхронизации
+  {
+    if(ETH_CheckFrameReceived())    
+    {
+      LwIP_Pkt_Handle();
+    }
+       
+    LwIP_Periodic_Handle(LocalTime);
+       
+    if(rew_status != 0) ReSendUdpData();
+    else nand_sb_read_handler();
+    
+    nand_erase_handler(); 
+    
+    if(Restart_Handler()) break;
+  }
  
   while(1)
   {
@@ -100,14 +119,14 @@ void main()
     }
       
    LwIP_Periodic_Handle(LocalTime);
+      
+   if(rew_status != 0) ReSendUdpData();
+   else nand_sb_read_handler();
    
    nand_sb_write_handler();
       
    nand_erase_handler(); 
-      
-   if(rew_status != 0) ReSendUdpData();
-   else nand_sb_read_handler();
-  
+    
   }
 }
 
@@ -129,6 +148,22 @@ void SysTick_Handler(void)
   {
     timer = 0;
     total_timer++;  
+    
+    if(t_info.initial_done == 1)
+    {
+      GPIO_WriteBit(GPIOI, GPIO_Pin_1,Bit_SET);
+      
+      for(int i = 0; i < MAX_ERROR; i++) 
+      {
+        if(*(((uint32_t*)&t_info)+i) == 1)
+        {
+          if(t_info.mask[i] == 1)
+          {
+            GPIO_WriteBit(GPIOI, GPIO_Pin_1,Bit_RESET);
+          }
+        }
+      }
+    }
   }
   
   LocalTime += SYSTEMTICK_PERIOD_MS;

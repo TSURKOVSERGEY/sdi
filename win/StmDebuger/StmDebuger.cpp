@@ -23,6 +23,7 @@ static char THIS_FILE[] = __FILE__;
 #define CHECK_CONNECT        1
 #define START_AUDIO_STREAM   2
 #define STOP_AUDIO_STREAM    3
+#define NEW                  4
 
 #define GET_SYS_INFO         20
 #define GET_TOTAL_INFO       21
@@ -68,8 +69,8 @@ static char THIS_FILE[] = __FILE__;
 
 char STM_ADR[] = {"192.9.206.204"}; 
 
-//#define SERV
-#define PTUK
+#define SERV
+//#define PTUK
 //#define SNTP
 
 
@@ -103,15 +104,16 @@ FILE *pf;
    unsigned int read_eth_ini_error[2];       // (6+7)   
    unsigned int read_total_time_error[2];    // (8+9)  
    unsigned int read_map_bb_error[2];        // (10+11) 
-   unsigned int rtc_error;                   // (12)    
-   unsigned int f_write_error;               // (13)    
-   unsigned int server_error;                // (14)   
-   unsigned int f415_spi1_error;             // (15)  
-   unsigned int f415_spi2_error;             // (16)   
-   unsigned int f415_adc_config_error;       // (17)   
-   unsigned int crc_binar_error;             // (18)    
-   unsigned int crc_wr_nand_error;           // (19)    
-   unsigned int crc_rd_nand_error;           // (20)  
+   unsigned int nand_fs_error[2];            // (12+13) ?????? ????????????? ???????? ???????
+   unsigned int rtc_error;                   // (14)    
+   unsigned int f_write_error;               // (15)    
+   unsigned int server_error;                // (16)   
+   unsigned int f415_spi1_error;             // (17)  
+   unsigned int f415_spi2_error;             // (18)   
+   unsigned int f415_adc_config_error;       // (19)   
+   unsigned int crc_binar_error;             // (20)    
+   unsigned int crc_wr_nand_error;           // (21)    
+   unsigned int crc_rd_nand_error;           // (22)  
 
    unsigned int bad_block_number;            
    unsigned int nand_work_counter[2];     
@@ -212,7 +214,9 @@ FILE        *fp;
 	" read_total_time_error (first  copy)", 
     " read_total_time_error (second copy)", 
 	" read_map_bb_error (first  copy)",       
-	" read_map_bb_error (second copy)",       
+	" read_map_bb_error (second copy)",  
+	" nand_fs_error (nand_0)",       
+	" nand_fs_error (nand_1)",       
 	" rtc_error",
 	" f_write_error",
 	" server_error",
@@ -261,6 +265,7 @@ void CMD_GetTotalInfo(void);
 
 void CMD_GetSuperBlock(int f_id1, int f_id2);
 
+void CMD_New(void);
 void CMD_Start(void);
 void CMD_Stop(void);
 void CMD_SetEthParam(int mode);
@@ -378,33 +383,34 @@ int GetID(char *name)
   const char* buffer[] = 
   {	
 	"connect",        // 0
-	"start",          // 1
-    "stop",           // 2
-	"info",           // 3
-	"total",          // 4
-    "gain",           // 5
-	"gsb",            // 6
-	"settime",        // 7
-	"gettime",        // 8
-	"eth_mac",        // 9
-	"eth_gw",         // 10
-    "eth_ip",         // 11
-    "eth_mask",       // 12
-    "eth_udptxadr",   // 13
-    "eth_udprx1port", // 14
-    "eth_udptx1port", // 15
-    "eth_udprx2port", // 16
-    "geteth",         // 17
-	"mapbb",          // 18
-	"tws",            // 19
-	"fix",            // 20
-	"iip",            // 21
-	"ip",             // 22
-	"index",          // 23
-	"getall"          // 24
+    "new",            // 1  
+	"start",          // 2
+    "stop",           // 3
+	"info",           // 4
+	"total",          // 5
+    "gain",           // 6
+	"gsb",            // 7
+	"settime",        // 8
+	"gettime",        // 9
+	"eth_mac",        // 10
+	"eth_gw",         // 11
+    "eth_ip",         // 12
+    "eth_mask",       // 13
+    "eth_udptxadr",   // 14
+    "eth_udprx1port", // 15
+    "eth_udptx1port", // 16
+    "eth_udprx2port", // 17
+    "geteth",         // 18
+	"mapbb",          // 19
+	"tws",            // 20
+	"fix",            // 21
+	"iip",            // 22
+	"ip",             // 23
+	"index",          // 24
+	"getall"          // 25
   };
 
-  for(int i = 0; i <= 24; i++ )
+  for(int i = 0; i <= 25; i++ )
   { if((strcmp(buffer[i],name)) == 0) return i;
   }
   
@@ -460,7 +466,6 @@ void main_handler(void)
 		return;
 	}
 
-	CMD_SetTime();
 
 	while(1)
 	{
@@ -470,17 +475,27 @@ void main_handler(void)
 
 		gets(buffer); 
 
-		if(buffer[0] != 110) sscanf(buffer,"%s %d %d %d %d",cmd,&param1,&param2,&param3,&param4,&param5,&param6);
+		//if(buffer[0] != 110) 
+	
+		sscanf(buffer,"%s %d %d %d %d",cmd,&param1,&param2,&param3,&param4,&param5,&param6);
 
    	    switch(GetID(cmd))
 		{
 		    case 0:  CMD_CheckConnect();         break;
- 			case 1:  CMD_Start();                break;
- 			case 2:  CMD_Stop();                 break;
- 			case 3:  CMD_GetSysInfo();           break;
- 			case 4:  CMD_GetTotalInfo();         break;
-//			case 5:  SetGain();                  break;
-			case 6:  
+ 			case 1:  
+					    	
+				CMD_SetTime();
+				CMD_New(); 
+				CMD_Start();
+
+		    break;
+
+ 			case 2:  CMD_Start();                break;
+ 			case 3:  CMD_Stop();                 break;
+ 			case 4:  CMD_GetSysInfo();           break;
+ 			case 5:  CMD_GetTotalInfo();         break;
+//			case 6:  SetGain();                  break;
+			case 7:  
 			
 				if(CMD_fOpen())
 				{
@@ -489,27 +504,27 @@ void main_handler(void)
 				}
 				
 			break;
- 			case 7:  CMD_SetTime();              break;
- 			case 8:  CMD_GetTime();              break;
-            case 9:  CMD_SetEthParam(1);         break;
-            case 10: CMD_SetEthParam(2);         break;
-            case 11: CMD_SetEthParam(3);         break;
-            case 12: CMD_SetEthParam(4);         break;
-            case 13: CMD_SetEthParam(5);         break;
-            case 14: CMD_SetEthParam(6);         break;
-            case 15: CMD_SetEthParam(7);         break;
-            case 16: CMD_SetEthParam(8);         break;
-            case 17: CMD_GetEthParam();          break;
-            case 18: CMD_FormatMapBB();          break;
-            case 19: CMD_FormatTWS();            break;
+ 			case 8:  CMD_SetTime();              break;
+ 			case 9:  CMD_GetTime();              break;
+            case 10:  CMD_SetEthParam(1);         break;
+            case 11: CMD_SetEthParam(2);         break;
+            case 12: CMD_SetEthParam(3);         break;
+            case 13: CMD_SetEthParam(4);         break;
+            case 14: CMD_SetEthParam(5);         break;
+            case 15: CMD_SetEthParam(6);         break;
+            case 16: CMD_SetEthParam(7);         break;
+            case 17: CMD_SetEthParam(8);         break;
+            case 18: CMD_GetEthParam();          break;
+            case 19: CMD_FormatMapBB();          break;
+            case 20: CMD_FormatTWS();            break;
 
 //          case 19: CMD_GetBmark(param1);       break;
 //          case 20: CMD_SetFixed(NULL);         break;
             case 21: CMD_GetIP();                break;
             case 22: CMD_SetIP();                break;
-            case 23: CMD_SetIndex();             break;
+            case 24: CMD_SetIndex();             break;
             
-			case 24: 
+			case 25: 
 			
 //				GetAllTimer();
 				//CMD_GetAll();               
@@ -840,7 +855,7 @@ void CMD_GetTotalInfo(void)
 	}
 
 
-	for(int i = 0; i < 21; i++)
+	for(int i = 0; i < 22; i++)
 	{
 		
 		
@@ -1119,7 +1134,7 @@ void CMD_GetSuperBlock(int f_id1, int f_id2)
 	#pragma pack(push,1)  
 	struct super_block_header_struct
 	{
-		unsigned char  status;
+		char           status;
 		time_struct    time_open;
 		time_struct    time_close;
 		unsigned int   sb_num;
@@ -1430,6 +1445,21 @@ int CMD_GetCloseFileIndex(unsigned char *pindex)
 	return 0;
 }
 */
+
+void CMD_New(void)
+{
+	if(!UdpInitial()) return;
+
+	if(SendRecvMessage(NEW,NULL,0,NEW+100,NULL,0,3))
+	{
+		printf("\n cmd new DONE \n");
+	}
+    else 
+	{
+		printf("\n cmd new FAILURE \n"); 
+	}
+	
+}
 
 void CMD_Start(void)
 {

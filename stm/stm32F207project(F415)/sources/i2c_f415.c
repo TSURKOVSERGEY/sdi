@@ -9,6 +9,8 @@ uint32_t  f415_Config(void)
   uint8_t  f415_error[2];
   uint8_t  pga112_gain[16];
   
+  t_info.f415_spi1_error = 1;
+  
   // отключение режима аудио потока (если был)
   if(!f415_WriteMessage(F415_STOP_STREAM,NULL,0)) 
   {

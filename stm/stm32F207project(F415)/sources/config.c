@@ -7,26 +7,86 @@ extern alarm_struct           alarm_data;
 extern bad_block_map_struct*  pmap_bb;
 extern total_work_struct      tws;
 extern adpcm_page_ctrl_struct adpcm_ctrl[MAX_CHANNEL];
-
-void Data_Config(void)
+extern tab_struct             tab;
+extern super_block_struct*     prsb;
+extern super_block_struct*     pwsb;
+extern adpcm_page_struct*      padpcm[2][MAX_CHANNEL];   
+extern uint8_t                 adpcm_ready;
+extern uint16_t                spi_dma_buffer[2][SPI_RX_DMA];
+extern void*                   pf;
+  
+void Data_Config(int mode)
 {
-  
-  memset(adpcm_ctrl,0,sizeof(adpcm_ctrl));
-  memset(&alarm_data,0,sizeof(alarm_data));
+  if(mode == DATA_CONFIG_NEW)
+  {
+    memset(adpcm_ctrl,0,sizeof(adpcm_ctrl));
+    memset(&alarm_data,0,sizeof(alarm_data));
     
-  alarm_data.PageAdressErase     = BEGIN_PAGE & 0xffffffc0;   
-  alarm_data.PageAdressWrite     = BEGIN_PAGE & 0xffffffc0;   
-  alarm_data.super_block_begin   = BEGIN_PAGE & 0xffffffc0;   
-  alarm_data.super_block_prev    = BEGIN_PAGE & 0xffffffc0;       
-  alarm_data.super_block_current = BEGIN_PAGE & 0xffffffc0;   
-  
-  
-  t_info.f207_mode = F207_IDLE_MODE;
-  t_info.f415_mode = F415_IDLE_MODE;
-  
-  t_info.f415_spi1_error = 1;
+    memset(prsb,0,sizeof(super_block_struct));
+    memset(pwsb,0,sizeof(super_block_struct));
+    memset(padpcm[0][0],0,sizeof(adpcm_page_struct)*MAX_CHANNEL*2);
+      
+    memset(tab,0,sizeof(tab_struct));
+    memset(spi_dma_buffer,0,sizeof(spi_dma_buffer));
     
-  LoadTwsStruct();
+    adpcm_ready = 0;
+    pf = NULL;
+    
+    alarm_data.PageAdressErase     = BEGIN_PAGE & 0xffffffc0;   
+    alarm_data.PageAdressWrite     = BEGIN_PAGE & 0xffffffc0;   
+    alarm_data.super_block_begin   = BEGIN_PAGE & 0xffffffc0;   
+    alarm_data.super_block_prev    = BEGIN_PAGE & 0xffffffc0;       
+    alarm_data.super_block_current = BEGIN_PAGE & 0xffffffc0;   
+  
+    t_info.f207_mode = F207_IDLE_MODE;
+    t_info.f415_mode = F415_IDLE_MODE;
+  
+  }
+  else if(mode == DATA_CONFIG_LOAD)
+  {
+        
+    alarm_data.PageAdressErase     = BEGIN_PAGE & 0xffffffc0;   
+    alarm_data.PageAdressWrite     = BEGIN_PAGE & 0xffffffc0;   
+    alarm_data.super_block_begin   = BEGIN_PAGE & 0xffffffc0;   
+    alarm_data.super_block_prev    = BEGIN_PAGE & 0xffffffc0;       
+    alarm_data.super_block_current = BEGIN_PAGE & 0xffffffc0;  
+    
+    t_info.f207_mode = F207_IDLE_MODE;
+    t_info.f415_mode = F415_IDLE_MODE;
+    pf = NULL;
+    LoadTwsStruct();
+    alarm_data.index = tws.index;
+    
+    t_info.mask[0]  = 1;   // (0)     ошибка конфигурации сетевого драйвера
+    t_info.mask[1]  = 1;   // (1+2+3) ошибка конфигурации udp сокета
+    t_info.mask[2]  = 1;
+    t_info.mask[3]  = 1;
+    t_info.mask[4]  = 1;   // (4)     ошибка динамической памяти
+    t_info.mask[5]  = 1;   // (5)     ошибка канала i2c(f207->f415)
+    t_info.mask[6]  = 1;   // (6+7)   ошибка чтения структуры инициализационных сетевых параметров (*)
+    t_info.mask[7]  = 1;
+    t_info.mask[8]  = 1;   // (8+9)   ошибка чтения структуры общего времени работы и количества циклов записи FLASH
+    t_info.mask[9]  = 1;
+    t_info.mask[10] = 1;  // (10+11) ошибка инициализации карты файловой системы (две копии)
+    t_info.mask[11] = 1;
+    t_info.mask[12] = 1;  // (12+13) ошибка инициализации файловой системы
+    t_info.mask[13] = 1;
+    t_info.mask[14] = 1;  // (14)    ошибка RTC (*)
+    t_info.mask[15] = 1;  // (15)    ошибка записи файла 
+    t_info.mask[16] = 0;  // (16)    ошибка сервера ( колличество несчитанных файлов )
+    t_info.mask[17] = 1;  // (17)    ошибка канала spi(f415->f207) 
+    t_info.mask[18] = 1;  // (18)    ошибка канала spi(f415->pga112)
+    t_info.mask[19] = 1;  // (19)    ошибка инициализации АЦП 
+    t_info.mask[20] = 0;  // (20)    ошибка crc данных (по binar от f415) 
+    t_info.mask[21] = 0;  // (21)    ошибка crc данных страницы FLASH (проверка перед записью)
+    t_info.mask[22] = 0;  // (22)    ошибка crc данных страницы FLASH (проверка после чтения)
+    
+    t_info.initial_done = 1;
+    
+  }
+
+  
+
  
 }
 
@@ -234,5 +294,25 @@ uint32_t f415_SPI_Config(void)
   return 0;
 }
 
+void TIM2_Config(void)
+{
+  TIM_TimeBaseInitTypeDef    TIM_TimeBaseStructure;
+  RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
+  TIM_TimeBaseStructInit(&TIM_TimeBaseStructure);
+  
+  TIM_TimeBaseStructure.TIM_Period = 60000000/8000;
+  TIM_TimeBaseStructure.TIM_Prescaler = 7;
+  
+  TIM_TimeBaseStructure.TIM_ClockDivision = 0;
+  TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+  TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
+  TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
+  TIM_SelectOutputTrigger(TIM2, TIM_TRGOSource_Update);
+  TIM_ITConfig(TIM2,TIM2_IRQn, ENABLE);  
+  NVIC_EnableIRQ(TIM2_IRQn);  
+  
+  TIM_Cmd(TIM2, ENABLE);
+  
+}
 
 
